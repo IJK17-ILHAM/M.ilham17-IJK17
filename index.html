@@ -59,8 +59,11 @@
     }
 
     body.dashboard-open {
-      background-color: var(--surface);
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background-color: #ffffff;
+      font-family: 'Inter Tight', 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    body.dashboard-open .background-blobs {
+      display: none;
     }
 
     .tabular-nums { font-variant-numeric: tabular-nums; }
@@ -428,24 +431,57 @@
       .c { filter: none !important; }
     }
 
-    /* ================= STYLE DASBOR FLOWMASTER (NAVY, PUTIH & CYAN) ================= */
+    /* ================= STYLE DASBOR FLOWMASTER (SELARAS HALAMAN PEMBUKA) ================= */
+    #main-app-container {
+      background: #ffffff;
+      color: var(--ink);
+      font-family: 'Inter Tight', 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .fm-dash-bowl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: clamp(290px, 44vh, 430px);
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 74% 92% at 50% -18%, rgba(143, 213, 241, 0.88) 0%, rgba(210, 218, 255, 0.48) 54%, rgba(255, 255, 255, 0) 82%),
+        radial-gradient(ellipse 96% 65% at 50% 0%, rgba(210, 218, 255, 0.34) 0%, rgba(255, 255, 255, 0) 78%);
+    }
+
+    .fm-dash-nav {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(11, 29, 58, 0.08);
+      border-radius: 999px;
+      box-shadow: 0 8px 30px rgba(11, 29, 58, 0.08);
+    }
+
     .banner-glass-card {
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(11, 29, 58, 0.08);
-      box-shadow: 0 10px 26px -10px rgba(11, 29, 58, 0.10);
+      box-shadow: 0 10px 28px -12px rgba(11, 29, 58, 0.09);
     }
 
     .fm-navy-kpi {
-      background: linear-gradient(145deg, #0b1d3a 0%, #102a54 100%);
+      background: #0e1f3d;
       color: #ffffff;
-      border: 1px solid rgba(47, 224, 208, 0.35);
-      box-shadow: 0 18px 36px -14px rgba(11, 29, 58, 0.45);
+      border: 1px solid rgba(47, 224, 208, 0.40);
+      box-shadow: 0 22px 44px -16px rgba(11, 29, 58, 0.48);
     }
 
     .bottom-nav-bar {
-      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      bottom: max(12px, env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(11, 29, 58, 0.08);
+      box-shadow: 0 12px 34px -8px rgba(11, 29, 58, 0.16);
     }
 
     #flowmaster-dropdown {
@@ -460,7 +496,7 @@
 
     @media print {
       body, html { background: #ffffff !important; color: #000000 !important; width: 100% !important; height: auto !important; overflow: visible !important; }
-      #splash-screen, header, .bottom-nav-bar, .no-print, .modal-overlay, .background-blobs, #fm-toast, #fm-confirm { display: none !important; }
+      #splash-screen, header, .bottom-nav-bar, .no-print, .modal-overlay, .background-blobs, .fm-dash-bowl, #fm-toast, #fm-confirm { display: none !important; }
       #main-app-container { display: block !important; opacity: 1 !important; pointer-events: auto !important; padding: 0 !important; margin: 0 !important; width: 100% !important; min-height: auto !important; overflow: visible !important; }
       #main-app-container main { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       #module-kas, #module-jastip, #module-riwayat { display: none !important; }
@@ -669,23 +705,28 @@
 
   <!-- ================= KONTEN UTAMA DASBOR ================= -->
   <div id="main-app-container" class="hidden relative z-10 flex flex-col min-h-screen pb-28 opacity-0 pointer-events-none transition-opacity duration-200 overflow-y-auto">
+    <div class="fm-dash-bowl no-print" aria-hidden="true"></div>
 
-    <!-- HEADER -->
-    <header class="px-3 md:px-6 pt-3 pb-2 no-print relative z-30">
-      <div class="max-w-lg mx-auto banner-glass-card rounded-2xl p-2.5 md:px-4 md:py-3 flex items-center justify-between gap-2 relative">
-        <div class="relative flex items-center gap-2.5" id="flowmaster-menu-container">
-          <div onclick="returnToSplash()" class="w-10 h-10 rounded-xl bg-[#0b1d3a] hover:bg-[#142c54] text-[#2fe0d0] flex items-center justify-center shadow text-base font-bold cursor-pointer select-none active:scale-90 transition duration-200 group" title="Kembali ke Halaman Depan">
-            <i class="fa-solid fa-shapes group-hover:rotate-12 transition-transform"></i>
-          </div>
-          <div class="flex flex-col justify-center">
-            <h1 onclick="returnToSplash()" class="text-base font-extrabold text-[#0b1d3a] tracking-tight cursor-pointer hover:text-[#5b7cf0] transition leading-none">FlowMaster</h1>
-            <button onclick="toggleFlowmasterDropdown(event)" type="button" class="mt-1 flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-[#e8f6fc] hover:bg-[#d8effa] text-[#0b1d3a] border border-[#8fd5f1]/60 font-bold text-[10px] md:text-[11px] transition w-max active:scale-95">
-              <span id="current-menu-label">Kas &amp; Dompet</span>
-              <i id="flowmaster-chevron" class="fa-solid fa-chevron-down text-[8px] text-[#5b7cf0] transition-transform duration-200"></i>
-            </button>
-          </div>
+    <!-- HEADER PILL SELARAS HALAMAN PEMBUKA -->
+    <header class="px-3 md:px-6 pt-3.5 pb-2 no-print relative z-30">
+      <div class="max-w-lg mx-auto fm-dash-nav py-2 pl-4 pr-2.5 flex items-center justify-between gap-2 relative">
+        <div class="relative flex items-center gap-2.5 min-w-0" id="flowmaster-menu-container">
+          <button type="button" onclick="returnToSplash()" class="flex items-center gap-2 text-left cursor-pointer select-none active:scale-95 transition group shrink-0" title="Kembali ke Halaman Depan">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="shrink-0 group-hover:rotate-6 transition-transform">
+              <rect x="2" y="2" width="9" height="9" rx="2.5" fill="#5b7cf0"/>
+              <rect x="13" y="2" width="9" height="9" rx="4.5" fill="#0b1d3a"/>
+              <rect x="2" y="13" width="9" height="9" rx="4.5" fill="#2fe0d0"/>
+              <rect x="13" y="13" width="9" height="9" rx="2.5" fill="#0b1d3a"/>
+            </svg>
+            <span class="text-[15px] font-semibold text-[#0b1d3a] tracking-[-0.02em] leading-none group-hover:text-[#5b7cf0] transition">FlowMaster</span>
+          </button>
 
-          <div id="flowmaster-dropdown" class="dropdown-closed absolute top-full left-0 mt-2.5 w-60 md:w-64 banner-glass-card rounded-2xl p-2 shadow-2xl border border-[#0b1d3a]/10 z-50 space-y-1">
+          <button onclick="toggleFlowmasterDropdown(event)" type="button" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#eef4ff] hover:bg-[#e1ecff] text-[#0b1d3a] border border-[#5b7cf0]/20 font-semibold text-[11px] transition max-w-[140px] sm:max-w-none active:scale-95">
+            <span id="current-menu-label" class="truncate">Kas &amp; Dompet</span>
+            <i id="flowmaster-chevron" class="fa-solid fa-chevron-down text-[8px] text-[#5b7cf0] transition-transform duration-200 shrink-0"></i>
+          </button>
+
+          <div id="flowmaster-dropdown" class="dropdown-closed absolute top-full left-0 mt-3 w-60 md:w-64 banner-glass-card rounded-2xl p-2 shadow-2xl border border-[#0b1d3a]/10 z-50 space-y-1">
             <div class="px-2.5 py-1 border-b border-[#0b1d3a]/10 mb-1 flex items-center justify-between">
               <span class="text-[9px] font-black uppercase text-[#526582] tracking-wider">Pilih Modul</span>
               <span class="text-[9px] text-[#5b7cf0] font-bold">4 Menu</span>
@@ -710,17 +751,17 @@
         </div>
 
         <div class="flex items-center shrink-0">
-          <button onclick="syncAllRealTime(true)" id="sps-status-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#0b1d3a]/10 text-xs font-bold text-[#0b1d3a] hover:bg-[#f2f7fc] shadow-sm active:scale-95 transition whitespace-nowrap" title="Klik untuk refresh manual">
+          <button onclick="syncAllRealTime(true)" id="sps-status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] text-xs font-medium text-white shadow-sm active:scale-95 transition whitespace-nowrap" title="Klik untuk refresh manual">
             <span id="sps-dot" class="w-2 h-2 rounded-full bg-[#2fe0d0] shadow shrink-0"></span>
             <span id="sps-status-text">Tersinkron</span>
-            <i class="fa-solid fa-arrows-rotate text-[#5b7cf0] text-[10px] ml-0.5"></i>
+            <i class="fa-solid fa-arrows-rotate text-[#8fe6f4] text-[10px]"></i>
           </button>
         </div>
       </div>
     </header>
 
     <!-- CONTENT AREA -->
-    <main class="max-w-lg mx-auto w-full px-3 md:px-4 pt-2 pb-6 space-y-4">
+    <main class="max-w-lg mx-auto w-full px-3 md:px-4 pt-2 pb-6 space-y-4 relative z-10">
 
       <!-- ============================================================== -->
       <!-- [MODUL 1] KAS DAN DOMPET                                       -->
@@ -1044,13 +1085,13 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="bottom-nav-bar fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#0b1d3a]/10 max-w-md mx-auto px-4 pt-2 flex items-center justify-between text-[11px] font-bold no-print shadow-2xl rounded-t-2xl">
-      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center gap-1 text-[#0b1d3a] font-extrabold py-1 flex-1 transition"><i class="fa-solid fa-wallet text-base"></i><span>Kas</span></button>
-      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center gap-1 text-[#526582] py-1 flex-1 transition"><i class="fa-solid fa-bag-shopping text-base"></i><span>Jastip</span></button>
-      <div class="flex flex-col items-center justify-center flex-1"><button onclick="triggerQuickAction()" class="w-12 h-12 -mt-6 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-xl flex items-center justify-center text-lg transition border-2 border-white ring-2 ring-[#2fe0d0]/50" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
-      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center gap-1 text-[#526582] py-1 flex-1 transition"><i class="fa-solid fa-table-list text-base"></i><span>Belanja</span></button>
-      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center gap-1 text-[#526582] py-1 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-base"></i><span>Riwayat</span></button>
+    <!-- BOTTOM NAVIGATION PILL BAR -->
+    <nav class="bottom-nav-bar fixed left-3 right-3 z-40 max-w-md mx-auto px-3 py-2 flex items-center justify-between text-[11px] font-bold no-print rounded-full">
+      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center gap-0.5 text-[#0b1d3a] font-extrabold py-0.5 flex-1 transition"><i class="fa-solid fa-wallet text-base"></i><span>Kas</span></button>
+      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-bag-shopping text-base"></i><span>Jastip</span></button>
+      <div class="flex flex-col items-center justify-center flex-1"><button onclick="triggerQuickAction()" class="w-11 h-11 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-lg flex items-center justify-center text-base transition ring-2 ring-[#2fe0d0]/40" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
+      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-table-list text-base"></i><span>Belanja</span></button>
+      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-base"></i><span>Riwayat</span></button>
     </nav>
   </div>
 
@@ -2068,10 +2109,10 @@
       localStorage.setItem('fm_dashboard_unlocked', 'true');
       document.body.classList.add('dashboard-open');
       if (typeof window.fmStopLandingAnim === 'function') window.fmStopLandingAnim();
-      document.documentElement.style.backgroundColor = '#f2f7fc';
-      document.body.style.backgroundColor = '#f2f7fc';
+      document.documentElement.style.backgroundColor = '#ffffff';
+      document.body.style.backgroundColor = '#ffffff';
       const metaTheme = document.getElementById('theme-color-meta');
-      if (metaTheme) metaTheme.setAttribute('content', '#f2f7fc');
+      if (metaTheme) metaTheme.setAttribute('content', '#ffffff');
 
       const mainContainer = document.getElementById('main-app-container');
       if (mainContainer) {
