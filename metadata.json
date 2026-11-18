@@ -1,0 +1,10 @@
+{
+  "name": "FlowMaster",
+  "description": "Kas Personal, Jastip & Rekap Belanja Real-Time dalam satu dasbor mobile.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
