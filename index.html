@@ -213,88 +213,49 @@
 
     .fm-hero {
       min-height: 100svh;
-      padding: clamp(112px, 16vh, 152px) var(--gut) clamp(44px, 7vh, 72px);
+      padding: clamp(92px, 12vh, 128px) var(--gut) clamp(64px, 10vh, 96px);
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       text-align: center;
     }
     .fm-hero h1 {
       margin: 0;
-      font-size: clamp(36px, 6vw, 72px);
-      line-height: 1.05;
+      font-size: clamp(36px, 6.2vw, 76px);
+      line-height: 1.06;
       letter-spacing: -.035em;
       font-weight: 500;
       color: var(--ink);
-      max-width: 17ch;
+      max-width: 18ch;
     }
     .fm-hero .hl, #fm-stmt .hl { color: var(--accent); }
     .fm-hero .trust {
-      margin: clamp(18px, 3vh, 28px) 0 0;
-      font-size: clamp(14.5px, 1.3vw, 17px);
-      line-height: 1.5;
+      margin: clamp(18px, 2.8vh, 26px) 0 0;
+      font-size: clamp(15px, 1.35vw, 18px);
+      line-height: 1.55;
       color: var(--ink-2);
-      max-width: 46ch;
+      max-width: 44ch;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity .75s var(--ease) .3s, transform .75s var(--ease) .3s;
     }
     .fm-hero .cta-wrap {
-      margin-top: clamp(22px, 3.2vh, 32px);
+      margin-top: clamp(24px, 3.6vh, 36px);
       opacity: 0;
       transform: translateY(10px);
       transition: opacity .75s var(--ease) .45s, transform .75s var(--ease) .45s;
     }
-    .fm-features-row {
-      margin-top: clamp(44px, 7vh, 72px);
-      width: 100%;
-      max-width: 820px;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity .8s var(--ease) .6s, transform .8s var(--ease) .6s;
+    .fm-hero .cta-wrap .fm-btn.lg {
+      padding: 14px 20px 14px 24px;
+      font-size: 15px;
+      box-shadow: 0 14px 30px -12px rgba(11, 29, 58, 0.35);
     }
     body.fm-ready .fm-hero .trust,
-    body.fm-ready .fm-hero .cta-wrap,
-    body.fm-ready .fm-features-row {
+    body.fm-ready .fm-hero .cta-wrap {
       opacity: 1;
       transform: none;
     }
-    .fm-feature-pill {
-      background: rgba(255, 255, 255, .86);
-      border: 1px solid rgba(11, 29, 58, .09);
-      border-radius: 18px;
-      padding: 16px 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 8px;
-      cursor: pointer;
-      color: var(--ink);
-      box-shadow: 0 6px 20px -8px rgba(11, 29, 58, .08);
-      transition: transform .22s var(--ease), background .22s var(--ease), border-color .22s var(--ease);
-    }
-    .fm-feature-pill:hover {
-      background: #ffffff;
-      border-color: rgba(91, 124, 240, .4);
-      transform: translateY(-2px);
-    }
-    .fm-feature-pill .f-ico {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: #eef4ff;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-    }
-    .fm-feature-pill .f-name { font-size: 14px; font-weight: 600; letter-spacing: -.015em; }
-    .fm-feature-pill .f-sub { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
 
     .fm-statement { height: 260vh; position: relative; }
     .fm-pin {
@@ -403,10 +364,6 @@
         padding: 7px 8px 7px 14px;
       }
       .fm-nav-links { display: none; }
-      .fm-features-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
       .fm-split { grid-template-columns: 1fr; }
       .fm-split-left {
         border-right: 0;
@@ -423,7 +380,6 @@
       }
       .fm-hero .trust,
       .fm-hero .cta-wrap,
-      .fm-features-row,
       .fm-split-row {
         opacity: 1 !important;
         transform: none !important;
@@ -566,30 +522,6 @@
               <span class="dot"></span>
               <span class="circ"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </span>
-          </button>
-        </div>
-
-        <!-- 4 Label Fitur FlowMaster -->
-        <div class="fm-features-row" aria-label="Empat modul utama FlowMaster">
-          <button type="button" class="fm-feature-pill" onclick="unlockDashboard('tab-kas')">
-            <span class="f-ico"><i class="fa-solid fa-wallet text-[#0b1d3a]"></i></span>
-            <span class="f-name">Kas</span>
-            <span class="f-sub">Saldo dompet, anggaran &amp; talangan</span>
-          </button>
-          <button type="button" class="fm-feature-pill" onclick="unlockDashboard('tab-jastip')">
-            <span class="f-ico"><i class="fa-solid fa-bag-shopping text-[#5b7cf0]"></i></span>
-            <span class="f-name">Jastip</span>
-            <span class="f-sub">Order, DP, fee &amp; invoice WA</span>
-          </button>
-          <button type="button" class="fm-feature-pill" onclick="unlockDashboard('tab-rekap')">
-            <span class="f-ico"><i class="fa-solid fa-table-list text-teal-700"></i></span>
-            <span class="f-name">Rekap Belanja</span>
-            <span class="f-sub">Tagihan rutin, cicilan &amp; cetak A4</span>
-          </button>
-          <button type="button" class="fm-feature-pill" onclick="unlockDashboard('tab-riwayat')">
-            <span class="f-ico"><i class="fa-solid fa-clock-rotate-left text-sky-700"></i></span>
-            <span class="f-name">Riwayat</span>
-            <span class="f-sub">Koreksi, batal, PDF &amp; Excel</span>
           </button>
         </div>
       </section>
