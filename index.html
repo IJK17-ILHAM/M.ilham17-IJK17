@@ -440,15 +440,15 @@
 
     .fm-dash-bowl {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: clamp(290px, 44vh, 430px);
+      inset: 0;
       pointer-events: none;
       z-index: 0;
-      background:
-        radial-gradient(ellipse 74% 92% at 50% -18%, rgba(143, 213, 241, 0.88) 0%, rgba(210, 218, 255, 0.48) 54%, rgba(255, 255, 255, 0) 82%),
-        radial-gradient(ellipse 96% 65% at 50% 0%, rgba(210, 218, 255, 0.34) 0%, rgba(255, 255, 255, 0) 78%);
+      overflow: hidden;
+    }
+    #fm-dash-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .fm-dash-nav {
@@ -705,7 +705,7 @@
 
   <!-- ================= KONTEN UTAMA DASBOR ================= -->
   <div id="main-app-container" class="hidden relative z-10 flex flex-col min-h-screen pb-28 opacity-0 pointer-events-none transition-opacity duration-200 overflow-y-auto">
-    <div class="fm-dash-bowl no-print" aria-hidden="true"></div>
+    <div class="fm-dash-bowl no-print" aria-hidden="true"><canvas id="fm-dash-canvas" width="96" height="60"></canvas></div>
 
     <!-- HEADER PILL SELARAS HALAMAN PEMBUKA -->
     <header class="px-3 md:px-6 pt-3.5 pb-2 no-print relative z-30">
@@ -1496,6 +1496,7 @@
         <button onclick="toggleModal('modal-jastip-detail', false); openWaInvoiceModal(currentDetailJastipId);" class="py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow active:scale-95"><i class="fa-brands fa-whatsapp"></i> Invoice</button>
         <button onclick="editJastipOrder(currentDetailJastipId)" class="py-2 px-3 rounded-xl bg-white hover:bg-[#f2f7fc] text-[#0b1d3a] border border-slate-200 text-xs font-bold flex items-center justify-center gap-1.5"><i class="fa-regular fa-pen-to-square"></i> Edit Order</button>
         <button onclick="openCancelJastipModal(currentDetailJastipId)" id="jd_btn_cancel" class="py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold flex items-center justify-center gap-1.5"><i class="fa-solid fa-ban"></i> Batalkan</button>
+        <button onclick="deleteFinishedJastipOrder(currentDetailJastipId)" id="jd_btn_archive" class="hidden col-span-2 py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold flex items-center justify-center gap-1.5"><i class="fa-regular fa-trash-can"></i> Hapus Order Selesai dari Daftar</button>
       </div>
     </div>
   </div>
@@ -1846,13 +1847,20 @@
       const cx = new Float32Array(N_PTS + 1);
       const cy = new Float32Array(N_PTS + 1);
 
-      function drawBowl(now) {
-        if (!ctx || !pxData || document.body.classList.contains('dashboard-open')) return;
+      const dashCanvas = document.getElementById('fm-dash-canvas');
+      const dashCtx = dashCanvas ? dashCanvas.getContext('2d') : null;
+      const dashImgData = dashCtx ? dashCtx.createImageData(W, H) : null;
+      const dashPxData = dashImgData ? dashImgData.data : null;
+      const dashCur = { tip: 0.32, half: 0.36, soft: 0.22 };
+      const dashTgt = { tip: 0.32, half: 0.36, soft: 0.22 };
+      let dashRafId = null;
+
+      function renderBowlToBuffer(targetCtx, targetImg, targetPx, state, driftAmt, edgeFade, now) {
+        if (!targetCtx || !targetPx) return;
         const aspect = window.innerWidth / Math.max(1, window.innerHeight);
-        const driftAmt = prefersReducedMotion ? 0 : (inIntro ? introGain : 1);
-        const tip = cur.tip + Math.sin(now * 0.00033 + 1.3) * 0.02 * driftAmt;
-        const half = cur.half + Math.sin(now * 0.0005) * 0.015 * driftAmt;
-        const soft = cur.soft;
+        const tip = state.tip + (driftAmt ? Math.sin(now * 0.00033 + 1.3) * 0.02 * driftAmt : 0);
+        const half = state.half + (driftAmt ? Math.sin(now * 0.0005) * 0.015 * driftAmt : 0);
+        const soft = state.soft;
         const RND = 0.25;
         const denTip = Math.max(tip, 0.08);
         for (let i = 0; i < N_PTS; i++) {
@@ -1863,7 +1871,6 @@
         }
         cx[N_PTS] = 0;
         cy[N_PTS] = tip;
-        const edgeFade = inIntro ? introGain : 1;
 
         for (let y = 0; y < H; y++) {
           const py = (y + 0.5) / H;
@@ -1896,14 +1903,74 @@
               b = 255 + (241 - 255) * k;
             }
             const idx = (y * W + x) * 4;
-            pxData[idx] = r | 0; pxData[idx + 1] = gr | 0; pxData[idx + 2] = b | 0; pxData[idx + 3] = 255;
+            targetPx[idx] = r | 0; targetPx[idx + 1] = gr | 0; targetPx[idx + 2] = b | 0; targetPx[idx + 3] = 255;
           }
         }
-        ctx.putImageData(imgData, 0, 0);
+        targetCtx.putImageData(targetImg, 0, 0);
+      }
+
+      function drawBowl(now) {
+        if (!ctx || !pxData || document.body.classList.contains('dashboard-open')) return;
+        const driftAmt = prefersReducedMotion ? 0 : (inIntro ? introGain : 1);
+        const edgeFade = inIntro ? introGain : 1;
+        renderBowlToBuffer(ctx, imgData, pxData, cur, driftAmt, edgeFade, now);
+      }
+
+      function drawDashBowl() {
+        if (!dashCtx || !dashPxData || !document.body.classList.contains('dashboard-open')) return;
+        renderBowlToBuffer(dashCtx, dashImgData, dashPxData, dashCur, 0, 1, 0);
+      }
+
+      function dashTick() {
+        if (!document.body.classList.contains('dashboard-open') || document.hidden) {
+          dashRafId = null;
+          return;
+        }
+        dashCur.tip += (dashTgt.tip - dashCur.tip) * 0.16;
+        dashCur.half += (dashTgt.half - dashCur.half) * 0.16;
+        dashCur.soft += (dashTgt.soft - dashCur.soft) * 0.16;
+        drawDashBowl();
+        const settled = Math.abs(dashTgt.tip - dashCur.tip) < 0.002 &&
+                        Math.abs(dashTgt.half - dashCur.half) < 0.002 &&
+                        Math.abs(dashTgt.soft - dashCur.soft) < 0.002;
+        if (settled) {
+          dashCur.tip = dashTgt.tip; dashCur.half = dashTgt.half; dashCur.soft = dashTgt.soft;
+          drawDashBowl();
+          dashRafId = null;
+        } else {
+          dashRafId = requestAnimationFrame(dashTick);
+        }
+      }
+
+      function onDashScroll() {
+        if (!document.body.classList.contains('dashboard-open')) return;
+        const mainEl = document.getElementById('main-app-container');
+        const vh = Math.max(1, window.innerHeight);
+        const scrollTop = Math.max(window.scrollY || 0, mainEl ? mainEl.scrollTop : 0);
+        const maxScroll = Math.max(
+          vh * 0.55,
+          document.documentElement.scrollHeight - vh,
+          mainEl ? (mainEl.scrollHeight - mainEl.clientHeight) : 0
+        );
+        const progress = clamp(scrollTop / maxScroll);
+        const bowl = sampleBowl(progress * 1.8);
+        dashTgt.tip = bowl.tip; dashTgt.half = bowl.half; dashTgt.soft = bowl.soft;
+
+        if (prefersReducedMotion) {
+          dashCur.tip = bowl.tip; dashCur.half = bowl.half; dashCur.soft = bowl.soft;
+          drawDashBowl();
+          return;
+        }
+        if (dashRafId === null) {
+          dashRafId = requestAnimationFrame(dashTick);
+        }
       }
 
       function onScroll() {
-        if (document.body.classList.contains('dashboard-open')) return;
+        if (document.body.classList.contains('dashboard-open')) {
+          onDashScroll();
+          return;
+        }
         const vh = Math.max(1, window.innerHeight);
         const q = window.scrollY / vh;
         const bowl = sampleBowl(q);
@@ -1980,6 +2047,10 @@
       };
 
       window.fmStartLandingAnim = function () {
+        if (dashRafId !== null) {
+          cancelAnimationFrame(dashRafId);
+          dashRafId = null;
+        }
         onScroll();
         if (prefersReducedMotion) {
           drawBowl(0);
@@ -1991,11 +2062,21 @@
         }
       };
 
+      window.fmUpdateDashBowl = function () {
+        if (!document.body.classList.contains('dashboard-open')) return;
+        const bowl = sampleBowl(0);
+        onDashScroll();
+        if (dashCur.tip === bowl.tip && dashCur.half === bowl.half) drawDashBowl();
+      };
+
       window.addEventListener('scroll', onScroll, { passive: true });
+      document.getElementById('main-app-container')?.addEventListener('scroll', onDashScroll, { passive: true });
       window.addEventListener('resize', onScroll, { passive: true });
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden && !document.body.classList.contains('dashboard-open')) {
           window.fmStartLandingAnim();
+        } else if (!document.hidden && document.body.classList.contains('dashboard-open')) {
+          onDashScroll();
         }
       });
 
@@ -2122,6 +2203,7 @@
 
       const tabToOpen = targetTab || currentAppTab || 'tab-kas';
       selectMenu(tabToOpen, TAB_LABELS[tabToOpen] || 'Kas & Dompet');
+      if (typeof window.fmUpdateDashBowl === 'function') window.fmUpdateDashBowl();
     }
 
     function returnToSplash() {
@@ -2266,6 +2348,7 @@
       if (tabId === 'tab-jastip' && typeof updateJastipModule === 'function') updateJastipModule();
       if (tabId === 'tab-rekap') { if (typeof renderRekapTable === 'function') renderRekapTable(); fetchFromRekapSps(false); }
       if (tabId === 'tab-riwayat' && typeof updateRiwayatModule === 'function') updateRiwayatModule();
+      if (typeof window.fmUpdateDashBowl === 'function') window.fmUpdateDashBowl();
     }
 
     function triggerQuickAction() {
@@ -3035,6 +3118,7 @@
       }
       if (!merged.processStatus) merged.processStatus = mapLegacyLogistics(merged.logistics);
       merged.biayaTambahan = Number(merged.biayaTambahan) || 0;
+      merged.isArchived = !!merged.isArchived;
       return normalizeJastipComputed(merged);
     }
 
@@ -3064,7 +3148,8 @@
         orderNo: order.orderNo, orderDate: order.orderDate, custAddress: order.custAddress || '',
         items: order.items || [], payments: order.payments || [],
         processStatus: order.processStatus || 'Dicatat', cancelReason: order.cancelReason || '',
-        biayaTambahan: Number(order.biayaTambahan) || 0, payStatus: order.payStatus
+        biayaTambahan: Number(order.biayaTambahan) || 0, payStatus: order.payStatus,
+        isArchived: !!order.isArchived
       };
       localStorage.setItem('fm_jastip_meta_v2', JSON.stringify(jastipMetaMap));
     }
@@ -3228,6 +3313,7 @@
       const sortVal = document.getElementById('jastip-sort-select')?.value || 'terbaru';
 
       const filtered = jastipOrders.filter((o) => {
+        if (o.isArchived) return false;
         if (periodVal === 'bulan_ini' && !(o.orderDate || '').startsWith(thisMonthISO)) return false;
         if (periodVal === 'hari_ini' && o.orderDate !== todayISO) return false;
         if (currentJastipFilter === 'aktif' && (o.processStatus === 'Selesai' || o.processStatus === 'Dibatalkan')) return false;
@@ -3278,7 +3364,10 @@
                 <span class="text-[11px] text-[#526582] block tabular-nums">Total ${formatRupiah(o.totalTagihan)}${o.totalPaid > 0 ? ` • DP ${formatRupiah(o.totalPaid)}` : ''}</span>
                 <span class="text-sm font-black tabular-nums ${o.sisaTagihan > 0 && !isCancelled ? 'text-rose-700' : 'text-teal-700'}">${isCancelled ? 'Dibatalkan' : (o.sisaTagihan > 0 ? `Sisa ${formatRupiah(o.sisaTagihan)}` : 'Lunas')}</span>
               </div>
-              <span class="px-2.5 py-1 rounded-lg bg-[#f2f7fc] text-xs font-extrabold text-[#0b1d3a] border border-slate-200 flex items-center gap-1 shadow-sm">Detail <i class="fa-solid fa-chevron-right text-[10px] text-[#5b7cf0]"></i></span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                ${isSelesai ? `<button type="button" onclick="event.stopPropagation(); deleteFinishedJastipOrder(${o.id})" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold flex items-center gap-1 shadow-sm active:scale-95 transition" title="Hapus dari daftar jastip (customer &amp; riwayat tetap tersimpan)"><i class="fa-regular fa-trash-can text-[10px]"></i> Hapus</button>` : ''}
+                <span class="px-2.5 py-1 rounded-lg bg-[#f2f7fc] text-xs font-extrabold text-[#0b1d3a] border border-slate-200 flex items-center gap-1 shadow-sm">Detail <i class="fa-solid fa-chevron-right text-[10px] text-[#5b7cf0]"></i></span>
+              </div>
             </div>
           </div>`;
       }).join('');
@@ -3338,6 +3427,7 @@
       document.getElementById('jd_action_pay').classList.toggle('hidden', isCancelled || o.sisaTagihan <= 0);
       document.getElementById('jd_btn_add_pay').classList.toggle('hidden', isCancelled || o.sisaTagihan <= 0);
       document.getElementById('jd_btn_cancel').classList.toggle('hidden', isCancelled);
+      document.getElementById('jd_btn_archive')?.classList.toggle('hidden', o.processStatus !== 'Selesai');
       toggleModal('modal-jastip-detail', true);
     }
 
@@ -3359,6 +3449,25 @@
       document.getElementById('jc_order_id').value = id;
       document.getElementById('jc_reason').value = '';
       toggleModal('modal-jastip-cancel', true);
+    }
+
+    async function deleteFinishedJastipOrder(id) {
+      const idx = jastipOrders.findIndex((x) => String(x.id) === String(id));
+      if (idx === -1) return;
+      const o = jastipOrders[idx];
+      if (o.processStatus !== 'Selesai') {
+        return showToast('Hanya order berstatus Selesai yang bisa dihapus dari daftar.', 'warn');
+      }
+      const ok = await askConfirm(`Hapus order ${o.orderNo} (${o.custName}) dari daftar Kelola Jastip?\n\nNama customer tetap tersimpan di Daftar Customer dan seluruh pembayarannya tetap tercatat di Riwayat Transaksi.`);
+      if (!ok) return;
+
+      syncCustomersFromOrders();
+      jastipOrders[idx].isArchived = true;
+      saveJastipMeta(jastipOrders[idx]);
+      saveLocalBackup();
+      toggleModal('modal-jastip-detail', false);
+      updateJastipModule();
+      showToast(`Order ${o.orderNo} dihapus dari daftar. Customer & riwayat transaksi tetap tercatat.`);
     }
 
     function openJastipPaymentModal(id) {
@@ -3423,9 +3532,10 @@
     }
 
     function openWaInvoiceModal(selectedId = null) {
-      if (!jastipOrders.length) return showToast('Belum ada data jastip!', 'warn');
+      const visibleOrders = jastipOrders.filter((o) => !o.isArchived || String(selectedId) === String(o.id));
+      if (!visibleOrders.length) return showToast('Belum ada data jastip!', 'warn');
       loadBankSettings();
-      document.getElementById('wa_select_order').innerHTML = jastipOrders.map((o) => `<option value="${o.id}" ${String(selectedId) === String(o.id) ? 'selected' : ''}>${escapeHtml(o.orderNo)} - ${escapeHtml(o.custName)} (${formatRupiah(o.totalTagihan)})</option>`).join('');
+      document.getElementById('wa_select_order').innerHTML = visibleOrders.map((o) => `<option value="${o.id}" ${String(selectedId) === String(o.id) ? 'selected' : ''}>${escapeHtml(o.orderNo)} - ${escapeHtml(o.custName)} (${formatRupiah(o.totalTagihan)})</option>`).join('');
       renderWaPreview();
       toggleWaModal(true);
     }
