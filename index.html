@@ -371,6 +371,35 @@
       }
     }
 
+    @media (max-width: 639px) {
+      .fm-nav {
+        top: 10px;
+        gap: 8px;
+        padding: 6px 6px 6px 12px;
+      }
+      .fm-brand {
+        font-size: 14.5px;
+        gap: 7px;
+      }
+      .fm-nav-r {
+        gap: 6px;
+        min-width: 0;
+      }
+      #fm-landing-nav .fm-btn {
+        padding: 7px 10px 7px 13px;
+        font-size: 12px;
+        gap: 6px;
+      }
+      #fm-landing-nav .fm-btn .ico {
+        width: 16px;
+        height: 16px;
+      }
+      #fm-landing-nav .fm-btn .ico .dot {
+        width: 6px;
+        height: 6px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.001ms !important;
@@ -500,9 +529,10 @@
       </nav>
 
       <div class="fm-nav-r">
-        <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#526582] mr-1" id="splash-date">Hari Ini</span>
-        <button type="button" class="fm-btn" onclick="unlockDashboard()">
-          <span>Buka FlowMaster</span>
+        <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-0 sm:py-0 rounded-full sm:rounded-none bg-[#eef4ff] sm:bg-transparent text-[10.5px] sm:text-[11px] font-semibold text-[#526582] whitespace-nowrap shrink-0 sm:mr-1" id="splash-date">Hari Ini</span>
+        <button type="button" class="fm-btn" onclick="unlockDashboard()" aria-label="Buka FlowMaster">
+          <span class="sm:hidden">Buka</span>
+          <span class="hidden sm:inline">Buka FlowMaster</span>
           <span class="ico">
             <span class="dot"></span>
             <span class="circ"><svg viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6l-3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -2119,7 +2149,6 @@
     };
 
     function unlockDashboard(targetTab) {
-      localStorage.setItem('fm_dashboard_unlocked', 'true');
       document.body.classList.add('dashboard-open');
       if (typeof window.fmStopLandingAnim === 'function') window.fmStopLandingAnim();
       document.documentElement.style.backgroundColor = '#ffffff';
@@ -2140,7 +2169,6 @@
 
     function returnToSplash() {
       closeFlowmasterDropdown();
-      localStorage.setItem('fm_dashboard_unlocked', 'false');
       document.body.classList.remove('dashboard-open');
       document.documentElement.style.backgroundColor = '#ffffff';
       document.body.style.backgroundColor = '#ffffff';
@@ -4557,8 +4585,9 @@ Terima kasih banyak! 🙏`;
       renderRekapTable();
       updateRiwayatModule();
 
-      if (localStorage.getItem('fm_dashboard_unlocked') === 'true') unlockDashboard();
-      else switchAppTab(currentAppTab);
+      localStorage.removeItem('fm_dashboard_unlocked');
+      document.body.classList.remove('dashboard-open');
+      switchAppTab(currentAppTab);
       syncAllRealTime(false);
 
       setInterval(() => {
