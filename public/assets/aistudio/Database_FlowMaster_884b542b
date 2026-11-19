@@ -1,0 +1,11 @@
+id,createdAt,time,type,category,desc,amount,
+1794326705459,2026-11-10,2026-11-10 23.05,pemasukan,200000,Lain-lain,[Ayang] Lain-lain,Ayang
+1794326774901,2026-11-10,2026-11-10 23.06,pemasukan,700000,Lain-lain,[Ilham] Lain-lain,Ilham
+1794339197649,2026-11-10,2026-11-10 02.33,pengeluaran,17000,Transport,[Ilham] Kreta pp & parkiran,Ilham
+1794339239244,2026-11-10,2026-11-10 02.33,pengeluaran,28000,Makan & Minum,[Ilham] Makan & Minum,Ilham
+1794339258114,2026-11-10,2026-11-10 02.34,pengeluaran,10000,Makan & Minum,[Ilham] Makan & Minum,Ilham
+1794339289435,2026-11-10,2026-11-10 02.34,pengeluaran,7500,Transport,[Ilham] Gojek,Ilham
+1794378309914,2026-11-11,2026-11-11 13.25,pengeluaran,44000,Makan & Minum,[Ayang] mcd,Ayang
+1794378483624,2026-11-11,2026-11-11 13.28,pengeluaran,23000,Makan & Minum,[Ilham] Makan & Minum,Ilham
+1794378642569,2026-11-11,2026-11-11 13.30,pemasukan,130000,Lain-lain,[Ayang] Lain-lain,Ayang
+1794391454373,2026-11-11,2026-11-11 17.04,pengeluaran,51000,Makan & Minum,[Ilham] Makan & Minum,Ilham

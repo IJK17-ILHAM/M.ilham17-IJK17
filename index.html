@@ -2082,6 +2082,12 @@
     };
 
     let ownersList = JSON.parse(localStorage.getItem('fm_owners_list')) || ['Ilham', 'Ayang'];
+    let pendingKasSync = JSON.parse(localStorage.getItem('fm_pending_kas_v1')) || [];
+    let deletedKasIds = JSON.parse(localStorage.getItem('fm_deleted_kas_v1')) || [];
+    let pendingJastipSync = JSON.parse(localStorage.getItem('fm_pending_jastip_v1')) || [];
+    let pendingRekapSync = JSON.parse(localStorage.getItem('fm_pending_rekap_v1')) || [];
+    let lastSpsKasSheetName = '';
+    let spsKasEmptyNotified = false;
     const nowLocal = new Date();
     const todayISO = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
     const thisMonthISO = todayISO.slice(0, 7);
@@ -2184,38 +2190,186 @@
     }
 
     // ================= SINKRONISASI REAL-TIME DUAL-SPS =================
+    function savePendingSyncState() {
+      localStorage.setItem('fm_pending_kas_v1', JSON.stringify(pendingKasSync));
+      localStorage.setItem('fm_deleted_kas_v1', JSON.stringify(deletedKasIds));
+      localStorage.setItem('fm_pending_jastip_v1', JSON.stringify(pendingJastipSync));
+      localStorage.setItem('fm_pending_rekap_v1', JSON.stringify(pendingRekapSync));
+    }
+    function enqueuePendingKas(entry) {
+      if (!entry || entry.id == null) return;
+      const sid = String(entry.id);
+      deletedKasIds = deletedKasIds.filter((x) => String(x) !== sid);
+      pendingKasSync = [
+        { id: entry.id, entry: mergeKasWithMeta(entry), ts: Date.now() },
+        ...pendingKasSync.filter((p) => String(p.id) !== sid)
+      ].slice(0, 100);
+      savePendingSyncState();
+    }
+    function markKasDeleted(id) {
+      const sid = String(id);
+      pendingKasSync = pendingKasSync.filter((p) => String(p.id) !== sid);
+      if (!deletedKasIds.includes(sid)) deletedKasIds.push(sid);
+      if (deletedKasIds.length > 200) deletedKasIds = deletedKasIds.slice(-200);
+      savePendingSyncState();
+    }
+    function enqueuePendingJastip(order) {
+      if (!order || order.id == null) return;
+      const sid = String(order.id);
+      pendingJastipSync = [
+        { id: order.id, entry: order, ts: Date.now() },
+        ...pendingJastipSync.filter((p) => String(p.id) !== sid)
+      ].slice(0, 80);
+      savePendingSyncState();
+    }
+    function enqueuePendingRekap(sheetName, item) {
+      if (!item || item.id == null) return;
+      const sid = String(item.id);
+      const targetSheet = sheetName || activeSheetName || '';
+      pendingRekapSync = [
+        { id: item.id, sheetName: targetSheet, entry: item, ts: Date.now() },
+        ...pendingRekapSync.filter((p) => String(p.id) !== sid)
+      ].slice(0, 80);
+      savePendingSyncState();
+    }
+
     async function postDataRealTime(url, payload) {
       try {
-        await fetch(url, {
-          method: 'POST', mode: 'no-cors',
+        const resp = await fetch(url, {
+          method: 'POST',
+          redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
+        if (!resp.ok) {
+          console.error('HTTP POST SPS gagal:', resp.status);
+          return false;
+        }
+        const txt = await resp.text();
+        try {
+          const json = JSON.parse(txt);
+          if (json && json.status && json.status !== 'success') {
+            console.error('SPS mengembalikan error:', json);
+            return false;
+          }
+        } catch (_) {}
         return true;
-      } catch (err) { console.error('Gagal POST:', err); return false; }
+      } catch (err) {
+        try {
+          await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          return true;
+        } catch (err2) {
+          console.error('Gagal POST:', err2);
+          return false;
+        }
+      }
+    }
+
+    let isFlushingPending = false;
+    async function flushPendingSyncQueues() {
+      if (isFlushingPending) return;
+      if (!pendingKasSync.length && !pendingJastipSync.length && !pendingRekapSync.length) return;
+      isFlushingPending = true;
+      try {
+        for (const p of [...pendingKasSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          await postDataRealTime(SPS_1_URL, { action: 'addKas', data: p.entry });
+        }
+        for (const p of [...pendingJastipSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          await postDataRealTime(SPS_1_URL, { action: 'addJastip', data: p.entry });
+        }
+        for (const p of [...pendingRekapSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          const sheet = p.sheetName || activeSheetName;
+          if (sheet) await postDataRealTime(SPS_2_URL, { action: 'addRekap', sheetName: sheet, data: p.entry });
+        }
+      } finally {
+        isFlushingPending = false;
+      }
     }
 
     async function fetchFromSps1(isManual = false) {
       try {
         const resp = await fetch(`${SPS_1_URL}?action=getData&_cb=${Date.now()}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const json = await resp.json();
         if (json.status === 'success') {
-          if (json.kas) kasTransactions = json.kas.map((raw) => mergeKasWithMeta(raw));
-          if (json.jastip) { jastipOrders = json.jastip.map((raw) => mergeJastipWithMeta(raw)); syncCustomersFromOrders(); }
+          if (json.kasSheetName) lastSpsKasSheetName = json.kasSheetName;
+          const deletedSet = new Set(deletedKasIds.map(String));
+
+          if (Array.isArray(json.kas)) {
+            const serverKas = json.kas
+              .filter((raw) => !deletedSet.has(String(raw.id)))
+              .map((raw) => mergeKasWithMeta(raw));
+            const serverIds = new Set(serverKas.map((k) => String(k.id)));
+
+            // Hapus antrean pending yang sudah terkonfirmasi ada di SPS
+            pendingKasSync = pendingKasSync.filter((p) => !serverIds.has(String(p.id)));
+            savePendingSyncState();
+
+            if (serverKas.length > 0) {
+              const mergedKas = [...serverKas];
+              pendingKasSync.forEach((p) => {
+                if (!serverIds.has(String(p.id)) && !deletedSet.has(String(p.id))) {
+                  mergedKas.unshift(mergeKasWithMeta(p.entry));
+                }
+              });
+              kasTransactions = mergedKas;
+            } else {
+              // SPS 1 mengembalikan kas: [] — pertahankan data kas lokal / pending agar input user tidak terhapus saat refresh!
+              const localMap = new Map();
+              pendingKasSync.forEach((p) => {
+                if (!deletedSet.has(String(p.id))) localMap.set(String(p.id), mergeKasWithMeta(p.entry));
+              });
+              kasTransactions.forEach((k) => {
+                const sid = String(k.id);
+                if (!deletedSet.has(sid) && !localMap.has(sid)) localMap.set(sid, mergeKasWithMeta(k));
+              });
+              kasTransactions = Array.from(localMap.values());
+            }
+          }
+
+          if (Array.isArray(json.jastip)) {
+            const serverJastip = json.jastip.map((raw) => mergeJastipWithMeta(raw));
+            const serverJastipIds = new Set(serverJastip.map((o) => String(o.id)));
+            pendingJastipSync = pendingJastipSync.filter((p) => !serverJastipIds.has(String(p.id)));
+            savePendingSyncState();
+
+            const mergedJastip = [...serverJastip];
+            pendingJastipSync.forEach((p) => {
+              if (!serverJastipIds.has(String(p.id))) mergedJastip.unshift(mergeJastipWithMeta(p.entry));
+            });
+            jastipOrders = mergedJastip;
+            syncCustomersFromOrders();
+          }
+
           saveLocalBackup();
           updateKasDashboard();
           if (typeof updateJastipModule === 'function') updateJastipModule();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
           updateStatusUI('online');
           if (isManual) showToast('Data Kas & Jastip tersinkron!');
+          return true;
         }
-      } catch (e) { console.warn('SPS 1 Offline:', e); updateStatusUI('offline'); }
+        throw new Error(json.message || 'Respon SPS 1 tidak valid');
+      } catch (e) {
+        console.warn('SPS 1 Offline:', e);
+        updateStatusUI('offline');
+        return false;
+      }
     }
 
     async function fetchFromRekapSps(isManual = false) {
       try {
         const querySheet = activeSheetName ? `&sheet=${encodeURIComponent(activeSheetName)}` : '';
         const resp = await fetch(`${SPS_2_URL}?action=getRekap${querySheet}&_cb=${Date.now()}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const json = await resp.json();
         if (json.status === 'success') {
           activeSheetName = json.sheetName || 'Bulan Ini';
@@ -2235,15 +2389,38 @@
             }
           }
 
-          rekapBelanjaList = json.data || [];
+          const serverRekap = json.data || [];
+          const matchesServer = (pEntry) => serverRekap.some((s) =>
+            String(s.id) === String(pEntry.id) ||
+            (String(s.pengeluaran || '').trim().toLowerCase() === String(pEntry.pengeluaran || '').trim().toLowerCase() &&
+             String(s.tglTempo || '') === String(pEntry.tglTempo || '') &&
+             Number(s.harga || 0) === Number(pEntry.harga || 0))
+          );
+
+          pendingRekapSync = pendingRekapSync.filter((p) => !(p.sheetName === activeSheetName && matchesServer(p.entry)));
+          savePendingSyncState();
+
+          const mergedRekap = [...serverRekap];
+          pendingRekapSync.forEach((p) => {
+            if (p.sheetName === activeSheetName && !matchesServer(p.entry)) {
+              mergedRekap.push(p.entry);
+            }
+          });
+          rekapBelanjaList = mergedRekap;
           saveLocalBackup();
           if (typeof renderRekapTable === 'function') renderRekapTable();
           updateKasDashboard();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
           updateStatusUI('online');
           if (isManual) showToast(`Rekap Belanja tersinkron ke Sheet ${activeSheetName}!`);
+          return true;
         }
-      } catch (e) { console.warn('SPS 2 Offline:', e); updateStatusUI('offline'); }
+        throw new Error(json.message || 'Respon SPS 2 tidak valid');
+      } catch (e) {
+        console.warn('SPS 2 Offline:', e);
+        updateStatusUI('offline');
+        return false;
+      }
     }
 
     function onSwitchSheetPeriod(sheetName) {
@@ -2256,12 +2433,17 @@
 
     function toggleSheetDropdownModal() { toggleModal('modal-sheet-picker', true); }
 
-    function syncAllRealTime(isManual = false) {
+    async function syncAllRealTime(isManual = false) {
       updateStatusUI('syncing');
-      Promise.all([fetchFromSps1(false), fetchFromRekapSps(false)]).then(() => {
+      await flushPendingSyncQueues();
+      const [ok1, ok2] = await Promise.all([fetchFromSps1(false), fetchFromRekapSps(false)]);
+      if (ok1 && ok2) {
         updateStatusUI('online');
         if (isManual) showToast('Sinkronisasi Real-Time Berhasil!');
-      });
+      } else {
+        updateStatusUI('offline');
+        if (isManual) showToast('Sebagian/semua SPS gagal dihubungi. Data tersimpan lokal.', 'warn');
+      }
     }
 
     function updateStatusUI(status) {
@@ -2370,6 +2552,39 @@
     function mergeKasWithMeta(raw) {
       const meta = kasMetaMap[String(raw.id)] || {};
       const merged = { ...raw, ...meta };
+
+      // Normalisasi format kolom dari Google Sheets / Database_FlowMaster
+      if (!merged.date && merged.createdAt) {
+        merged.date = String(merged.createdAt).slice(0, 10);
+      }
+      if (merged.time) {
+        const tmStr = String(merged.time);
+        const mTime = tmStr.match(/(\d{1,2}[:.]\d{2})/);
+        if (mTime) merged.time = mTime[1];
+      }
+      // Tangani header bergeser pada sheet Kas: category=nominal, desc=kategori, amount="[Pemilik] Ket"
+      const rawAmountNum = Number(merged.amount);
+      const rawCatNum = Number(merged.category);
+      if ((merged.amount === undefined || merged.amount === '' || isNaN(rawAmountNum)) && !isNaN(rawCatNum) && rawCatNum > 0) {
+        const shiftedDesc = String(merged.amount || '');
+        merged.amount = rawCatNum;
+        merged.category = String(merged.desc || 'Umum');
+        merged.desc = shiftedDesc;
+      } else {
+        merged.amount = Number(merged.amount) || 0;
+      }
+      if (typeof merged.desc === 'string') {
+        const ownerMatch = merged.desc.match(/^\[([^\]]+)\]\s*(.*)$/);
+        if (ownerMatch) {
+          if (!merged.owner) merged.owner = ownerMatch[1].trim();
+          merged.desc = ownerMatch[2].trim() || ownerMatch[1].trim();
+        }
+      }
+      if (!merged.date && Number(merged.id) > 1600000000000) {
+        const dt = new Date(Number(merged.id));
+        merged.date = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+      }
+      if (!merged.owner) merged.owner = ownersList[0] || 'Umum';
       if (!merged.type) merged.type = 'pengeluaran';
       if (!merged.walletId && merged.type !== 'transfer' && !(merged.payerType === 'pihak_luar' && merged.bantuanMode === 'langsung')) {
         merged.walletId = (kasWallets[0] && kasWallets[0].id) || 'w_tunai';
@@ -2607,6 +2822,7 @@
         kasTransactions = kasTransactions.filter((k) => k.id !== id);
         delete kasMetaMap[String(id)];
         localStorage.setItem('fm_kas_meta_v2', JSON.stringify(kasMetaMap));
+        markKasDeleted(id);
         saveLocalBackup();
         updateKasDashboard();
         if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
@@ -2917,13 +3133,22 @@
             };
             kasTransactions.unshift(entry);
             saveKasMeta(entry);
+            enqueuePendingKas(entry);
             saveLocalBackup();
             updateKasDashboard();
             if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
-            await postDataRealTime(SPS_1_URL, { action: 'addKas', data: entry });
+            const okPost = await postDataRealTime(SPS_1_URL, { action: 'addKas', data: entry });
             this.reset(); document.getElementById('kas_date').value = todayISO; btn.disabled = false;
             toggleModal('modal-kas-form', false);
-            showToast(`Transfer ${fromName} → ${toName} berhasil dicatat!`);
+            await fetchFromSps1(false);
+            if (!okPost) {
+              showToast(`Transfer disimpan lokal & menunggu sinkron SPS.`, 'warn');
+            } else if (pendingKasSync.some((p) => String(p.id) === String(entry.id)) && lastSpsKasSheetName && !spsKasEmptyNotified) {
+              spsKasEmptyNotified = true;
+              showToast(`Transfer disimpan lokal. Pastikan tab "${lastSpsKasSheetName}" ada di SPS 1.`, 'warn');
+            } else {
+              showToast(`Transfer ${fromName} → ${toName} berhasil dicatat!`);
+            }
             return;
           }
 
@@ -2960,13 +3185,22 @@
             saveDebts();
           }
 
+          enqueuePendingKas(newEntry);
           saveLocalBackup();
           updateKasDashboard();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
-          await postDataRealTime(SPS_1_URL, { action: 'addKas', data: newEntry });
+          const okPost = await postDataRealTime(SPS_1_URL, { action: 'addKas', data: newEntry });
           this.reset(); document.getElementById('kas_date').value = todayISO; btn.disabled = false;
           toggleModal('modal-kas-form', false);
-          showToast(`Transaksi ${owner} tersimpan${isUtang ? ' & dicatat ke Utang/Talangan' : ''}!`);
+          await fetchFromSps1(false);
+          if (!okPost) {
+            showToast(`Transaksi ${owner} tersimpan lokal & akan dicoba kirim ulang ke SPS.`, 'warn');
+          } else if (pendingKasSync.some((p) => String(p.id) === String(newEntry.id)) && lastSpsKasSheetName && !spsKasEmptyNotified) {
+            spsKasEmptyNotified = true;
+            showToast(`Tersimpan lokal. Periksa tab "${lastSpsKasSheetName}" di Spreadsheet Kas agar ikut terbaca saat refresh.`, 'warn');
+          } else {
+            showToast(`Transaksi ${owner} tersimpan${isUtang ? ' & dicatat ke Utang/Talangan' : ''}!`);
+          }
         });
       }
 
@@ -2997,12 +3231,14 @@
           };
           kasTransactions.unshift(kasEntry);
           saveKasMeta(kasEntry);
+          enqueuePendingKas(kasEntry);
           saveLocalBackup();
           updateKasDashboard();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
           renderKasDebtsList();
           debtPayForm.classList.add('hidden');
           await postDataRealTime(SPS_1_URL, { action: 'addKas', data: kasEntry });
+          await fetchFromSps1(false);
           showToast('Pelunasan utang dicatat & saldo dompet diperbarui!');
         });
       }
@@ -4328,20 +4564,23 @@ Terima kasih banyak! 🙏`;
             };
             kasTransactions.unshift(kasEntry);
             saveKasMeta(kasEntry);
-            postDataRealTime(SPS_1_URL, { action: 'addKas', data: kasEntry });
+            enqueuePendingKas(kasEntry);
+            await postDataRealTime(SPS_1_URL, { action: 'addKas', data: kasEntry });
           }
           const newRaw = { id: newOrderId, orderNo, orderDate, custName, custContact, custAddress, items, fee, ongkir, biayaTambahan, payments, processStatus, cancelReason: '' };
           const normalized = normalizeJastipComputed(newRaw);
           jastipOrders.unshift(normalized);
           saveJastipMeta(normalized);
+          enqueuePendingJastip(normalized);
           syncCustomersFromOrders();
           saveLocalBackup();
           updateJastipModule();
           updateKasDashboard();
           updateRiwayatModule();
-          await postDataRealTime(SPS_1_URL, { action: 'addJastip', data: normalized });
+          const okJastip = await postDataRealTime(SPS_1_URL, { action: 'addJastip', data: normalized });
+          await fetchFromSps1(false);
           toggleJastipModal(false);
-          showToast(`Order ${normalized.orderNo} berhasil disimpan!`);
+          showToast(okJastip ? `Order ${normalized.orderNo} berhasil disimpan!` : `Order ${normalized.orderNo} disimpan lokal & menunggu sinkron SPS.`, okJastip ? 'info' : 'warn');
         }
       });
 
@@ -4407,6 +4646,7 @@ Terima kasih banyak! 🙏`;
           };
           kasTransactions.unshift(kasEntry);
           saveKasMeta(kasEntry);
+          enqueuePendingKas(kasEntry);
           await postDataRealTime(SPS_1_URL, { action: 'addKas', data: kasEntry });
         }
 
@@ -4415,6 +4655,7 @@ Terima kasih banyak! 🙏`;
         updateKasDashboard();
         updateRiwayatModule();
         await postDataRealTime(SPS_1_URL, { action: 'updateJastip', data: { id: updated.id, payStatus: updated.payStatus, logistics: updated.processStatus } });
+        await fetchFromSps1(false);
         toggleModal('modal-jastip-payment', false);
         if (!document.getElementById('modal-jastip-detail').classList.contains('hidden')) openJastipDetailModal(updated.id);
         showToast(updated.payStatus === 'lunas' ? `${updated.orderNo} sekarang LUNAS!` : 'Pembayaran DP/cicilan tersimpan!');
@@ -4452,6 +4693,7 @@ Terima kasih banyak! 🙏`;
           };
           kasTransactions.unshift(kasEntry);
           saveKasMeta(kasEntry);
+          enqueuePendingKas(kasEntry);
           await postDataRealTime(SPS_1_URL, { action: 'addKas', data: kasEntry });
         }
 
@@ -4460,6 +4702,7 @@ Terima kasih banyak! 🙏`;
         updateKasDashboard();
         updateRiwayatModule();
         await postDataRealTime(SPS_2_URL, { action: 'editRekap', sheetName: activeSheetName, data: updatedItem });
+        await fetchFromRekapSps(false);
         toggleModal('modal-bayar-cicilan', false);
         btn.disabled = false;
         showToast(isNowLunas ? `Cicilan "${item.pengeluaran}" sudah LUNAS!` : `Cicilan ke-${newCicilDone} tersimpan!`);
@@ -4480,7 +4723,9 @@ Terima kasih banyak! 🙏`;
         const totalJenis = isCicilType ? `Cicilan (${tenorCount}x)` : 'Rutin';
         const statusLunas = document.getElementById('r_status_lunas').value;
         if (harga <= 0) { showToast('Nominal harga harus lebih dari 0!', 'warn'); btn.disabled = false; return; }
+        if (!activeSheetName) await fetchFromRekapSps(false);
 
+        let okRekap = true;
         if (isEditing) {
           const itemLama = rekapBelanjaList[Number(editIdx)];
           const metaLama = parseRekapMeta(itemLama);
@@ -4489,20 +4734,21 @@ Terima kasih banyak! 🙏`;
           saveLocalBackup();
           renderRekapTable();
           updateKasDashboard();
-          await postDataRealTime(SPS_2_URL, { action: 'editRekap', sheetName: activeSheetName, data: updatedItem });
+          okRekap = await postDataRealTime(SPS_2_URL, { action: 'editRekap', sheetName: activeSheetName, data: updatedItem });
         } else {
           const newItem = { id: Date.now(), tglTempo, pengeluaran, harga, catatan: buildCatatanWithMeta(rawNote, statusLunas === 'lunas', statusLunas === 'lunas' ? harga : 0, 0, 0), totalJenis, statusLunas };
           rekapBelanjaList.push(newItem);
+          enqueuePendingRekap(activeSheetName, newItem);
           saveLocalBackup();
           renderRekapTable();
           updateKasDashboard();
-          await postDataRealTime(SPS_2_URL, { action: 'addRekap', sheetName: activeSheetName, data: newItem });
+          okRekap = await postDataRealTime(SPS_2_URL, { action: 'addRekap', sheetName: activeSheetName, data: newItem });
         }
+        await fetchFromRekapSps(false);
         this.reset();
         toggleRekapModal(false);
         btn.disabled = false;
-        showToast(`Berhasil dicatat ke Sheet ${activeSheetName || 'Aktif'}!`);
-        setTimeout(() => fetchFromRekapSps(false), 1200);
+        showToast(okRekap ? `Berhasil dicatat ke Sheet ${activeSheetName || 'Aktif'}!` : `Tersimpan lokal & menunggu sinkron Sheet ${activeSheetName || 'Aktif'}.`, okRekap ? 'info' : 'warn');
       });
 
       document.getElementById('riwayat-koreksi-form')?.addEventListener('submit', async function (ev) {
@@ -4590,8 +4836,9 @@ Terima kasih banyak! 🙏`;
       switchAppTab(currentAppTab);
       syncAllRealTime(false);
 
-      setInterval(() => {
+      setInterval(async () => {
         if (document.body.classList.contains('dashboard-open')) {
+          await flushPendingSyncQueues();
           if (currentAppTab === 'tab-rekap') fetchFromRekapSps(false);
           else fetchFromSps1(false);
         }
