@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -53,7 +53,7 @@
       min-height: 100%;
       background-color: #ffffff;
       color: var(--ink);
-      overflow-x: hidden;
+      overflow-x: clip;
       -webkit-tap-highlight-color: transparent;
       transition: background-color 0.3s ease;
     }
@@ -421,6 +421,7 @@
       background: #ffffff;
       color: var(--ink);
       font-family: 'Inter Tight', 'Plus Jakarta Sans', system-ui, sans-serif;
+      padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
     }
 
     .fm-dash-bowl {
@@ -461,12 +462,18 @@
     }
 
     .bottom-nav-bar {
-      bottom: max(12px, env(safe-area-inset-bottom));
-      background: rgba(255, 255, 255, 0.95);
+      position: fixed !important;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      z-index: 45;
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(11, 29, 58, 0.08);
-      box-shadow: 0 12px 34px -8px rgba(11, 29, 58, 0.16);
+      border: 1px solid rgba(11, 29, 58, 0.09);
+      box-shadow: 0 12px 34px -8px rgba(11, 29, 58, 0.18);
     }
 
     #flowmaster-dropdown {
@@ -666,7 +673,7 @@
   </div>
 
   <!-- ================= KONTEN UTAMA DASBOR ================= -->
-  <div id="main-app-container" class="hidden relative z-10 flex flex-col min-h-screen pb-28 opacity-0 pointer-events-none transition-opacity duration-200 overflow-y-auto">
+  <div id="main-app-container" class="hidden relative z-10 flex flex-col min-h-screen opacity-0 pointer-events-none">
     <div class="fm-dash-bowl no-print" aria-hidden="true"><canvas id="fm-dash-canvas" width="96" height="60"></canvas></div>
 
     <!-- HEADER PILL SELARAS HALAMAN PEMBUKA -->
@@ -1048,12 +1055,12 @@
     </main>
 
     <!-- BOTTOM NAVIGATION PILL BAR -->
-    <nav class="bottom-nav-bar fixed left-3 right-3 z-40 max-w-md mx-auto px-3 py-2 flex items-center justify-between text-[11px] font-bold no-print rounded-full">
-      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center gap-0.5 text-[#0b1d3a] font-extrabold py-0.5 flex-1 transition"><i class="fa-solid fa-wallet text-base"></i><span>Kas</span></button>
-      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-bag-shopping text-base"></i><span>Jastip</span></button>
-      <div class="flex flex-col items-center justify-center flex-1"><button onclick="triggerQuickAction()" class="w-11 h-11 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-lg flex items-center justify-center text-base transition ring-2 ring-[#2fe0d0]/40" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
-      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-table-list text-base"></i><span>Belanja</span></button>
-      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center gap-0.5 text-[#526582] py-0.5 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-base"></i><span>Riwayat</span></button>
+    <nav class="bottom-nav-bar max-w-md mx-auto px-2 py-1.5 sm:px-3 sm:py-2 flex items-center justify-between text-[10px] sm:text-[11px] font-bold no-print rounded-full">
+      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center justify-center gap-0.5 text-[#0b1d3a] font-extrabold py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-wallet text-[15px] sm:text-base leading-none"></i><span class="truncate">Kas</span></button>
+      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-bag-shopping text-[15px] sm:text-base leading-none"></i><span class="truncate">Jastip</span></button>
+      <div class="flex flex-col items-center justify-center shrink-0 px-1"><button onclick="triggerQuickAction()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-lg flex items-center justify-center text-sm sm:text-base transition ring-2 ring-[#2fe0d0]/40" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
+      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-table-list text-[15px] sm:text-base leading-none"></i><span class="truncate">Belanja</span></button>
+      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-[15px] sm:text-base leading-none"></i><span class="truncate">Riwayat</span></button>
     </nav>
   </div>
 
@@ -2159,7 +2166,9 @@
       'tab-riwayat': 'Riwayat Transaksi'
     };
 
-    function unlockDashboard(targetTab) {
+    function unlockDashboard(targetTab, options) {
+      const opts = options || {};
+      try { sessionStorage.setItem('fm_in_dashboard', '1'); } catch (e) {}
       document.body.classList.add('dashboard-open');
       if (typeof window.fmStopLandingAnim === 'function') window.fmStopLandingAnim();
       document.documentElement.style.backgroundColor = '#ffffff';
@@ -2176,9 +2185,13 @@
       const tabToOpen = targetTab || currentAppTab || 'tab-kas';
       selectMenu(tabToOpen, TAB_LABELS[tabToOpen] || 'Kas & Dompet');
       if (typeof window.fmUpdateDashBowl === 'function') window.fmUpdateDashBowl();
+      if (!opts.skipSync && typeof syncAllRealTime === 'function') {
+        syncAllRealTime(false);
+      }
     }
 
     function returnToSplash() {
+      try { sessionStorage.removeItem('fm_in_dashboard'); } catch (e) {}
       closeFlowmasterDropdown();
       document.body.classList.remove('dashboard-open');
       document.documentElement.style.backgroundColor = '#ffffff';
@@ -2238,14 +2251,46 @@
       savePendingSyncState();
     }
 
+    function buildKasSumberDanaLabel(d) {
+      if (!d) return '-';
+      const wName = d.walletName || (d.walletId ? getWalletName(d.walletId) : '');
+      const toWName = d.toWalletName || (d.toWalletId ? getWalletName(d.toWalletId) : '');
+      if (d.type === 'transfer') {
+        return `Transfer: ${wName || 'Dompet'} → ${toWName || 'Dompet'}`;
+      }
+      const pName = d.payerName || d.owner || 'Pemilik';
+      if (d.payerType === 'pihak_luar') {
+        if (d.type === 'pengeluaran' && d.bantuanMode === 'langsung') {
+          return `Pihak Luar: ${pName} (Langsung)`;
+        }
+        return wName ? `Pihak Luar: ${pName} • ${wName}` : `Pihak Luar: ${pName}`;
+      }
+      return wName ? `${pName} • ${wName}` : pName;
+    }
+
     async function postDataRealTime(url, payload) {
       lastSpsError = '';
+      let finalPayload = payload;
+      if (payload && payload.action === 'addKas' && payload.data) {
+        const d = payload.data;
+        const walletName = d.walletName || (d.walletId ? getWalletName(d.walletId) : '');
+        const toWalletName = d.toWalletName || (d.toWalletId ? getWalletName(d.toWalletId) : '');
+        finalPayload = {
+          ...payload,
+          data: {
+            ...d,
+            walletName,
+            toWalletName,
+            sumberDana: d.sumberDana || buildKasSumberDanaLabel({ ...d, walletName, toWalletName })
+          }
+        };
+      }
       try {
         const resp = await fetch(url, {
           method: 'POST',
           redirect: 'follow',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(finalPayload)
         });
         if (!resp.ok) {
           lastSpsError = `HTTP ${resp.status}`;
@@ -2268,7 +2313,7 @@
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(finalPayload)
           });
           return true;
         } catch (err2) {
@@ -2603,6 +2648,25 @@
       }
       if (!merged.owner) merged.owner = ownersList[0] || 'Umum';
       if (!merged.type) merged.type = 'pengeluaran';
+      // Pulihkan payerType / payerName / walletId dari kolom Sumber Dana SPS 1 lintas perangkat
+      if (merged.sumberDana && !meta.payerName) {
+        const sd = String(merged.sumberDana).trim();
+        if (/^pihak luar\s*:/i.test(sd)) {
+          merged.payerType = 'pihak_luar';
+          const cleanSd = sd.replace(/^pihak luar\s*:\s*/i, '');
+          if (/\(langsung\)/i.test(cleanSd)) merged.bantuanMode = 'langsung';
+          const pPart = cleanSd.split('•')[0].replace(/\(langsung\)/gi, '').trim();
+          if (pPart) merged.payerName = pPart;
+        } else if (!/^transfer\s*:/i.test(sd) && sd.includes('•')) {
+          const parts = sd.split('•').map((x) => x.trim());
+          if (parts[0]) merged.payerName = parts[0];
+          if (parts[1] && !merged.walletName) merged.walletName = parts[1];
+        }
+      }
+      if (!merged.walletId && merged.walletName && merged.type !== 'transfer') {
+        const matchedWallet = kasWallets.find((w) => w.name.toLowerCase() === String(merged.walletName).trim().toLowerCase());
+        if (matchedWallet) merged.walletId = matchedWallet.id;
+      }
       if (!merged.walletId && merged.type !== 'transfer' && !(merged.payerType === 'pihak_luar' && merged.bantuanMode === 'langsung')) {
         merged.walletId = (kasWallets[0] && kasWallets[0].id) || 'w_tunai';
       }
@@ -4858,8 +4922,14 @@ Terima kasih banyak! 🙏`;
       updateRiwayatModule();
 
       localStorage.removeItem('fm_dashboard_unlocked');
-      document.body.classList.remove('dashboard-open');
-      switchAppTab(currentAppTab);
+      let resumeDashboard = false;
+      try { resumeDashboard = sessionStorage.getItem('fm_in_dashboard') === '1'; } catch (e) {}
+      if (resumeDashboard) {
+        unlockDashboard(currentAppTab, { skipSync: true });
+      } else {
+        document.body.classList.remove('dashboard-open');
+        switchAppTab(currentAppTab);
+      }
       syncAllRealTime(false);
 
       setInterval(async () => {
