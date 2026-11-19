@@ -2088,6 +2088,11 @@
     let pendingRekapSync = JSON.parse(localStorage.getItem('fm_pending_rekap_v1')) || [];
     let lastSpsKasSheetName = '';
     let spsKasEmptyNotified = false;
+    let lastSpsError = '';
+    if (activeSheetName === 'Bulan Ini') {
+      activeSheetName = '';
+      localStorage.removeItem('fm_rekap_selected_sheet');
+    }
     const nowLocal = new Date();
     const todayISO = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
     const thisMonthISO = todayISO.slice(0, 7);
@@ -2234,6 +2239,7 @@
     }
 
     async function postDataRealTime(url, payload) {
+      lastSpsError = '';
       try {
         const resp = await fetch(url, {
           method: 'POST',
@@ -2242,6 +2248,7 @@
           body: JSON.stringify(payload)
         });
         if (!resp.ok) {
+          lastSpsError = `HTTP ${resp.status}`;
           console.error('HTTP POST SPS gagal:', resp.status);
           return false;
         }
@@ -2249,6 +2256,7 @@
         try {
           const json = JSON.parse(txt);
           if (json && json.status && json.status !== 'success') {
+            lastSpsError = json.message || 'Gagal diproses oleh Apps Script';
             console.error('SPS mengembalikan error:', json);
             return false;
           }
@@ -2264,6 +2272,7 @@
           });
           return true;
         } catch (err2) {
+          lastSpsError = err2 && err2.message ? err2.message : 'Koneksi gagal';
           console.error('Gagal POST:', err2);
           return false;
         }
@@ -2365,19 +2374,20 @@
       }
     }
 
-    async function fetchFromRekapSps(isManual = false) {
+    async function fetchFromRekapSps(isManual = false, skipSavedSheet = false) {
       try {
-        const querySheet = activeSheetName ? `&sheet=${encodeURIComponent(activeSheetName)}` : '';
+        const requestedSheet = (!skipSavedSheet && activeSheetName && activeSheetName !== 'Bulan Ini') ? activeSheetName : '';
+        const querySheet = requestedSheet ? `&sheet=${encodeURIComponent(requestedSheet)}` : '';
         const resp = await fetch(`${SPS_2_URL}?action=getRekap${querySheet}&_cb=${Date.now()}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const json = await resp.json();
         if (json.status === 'success') {
-          activeSheetName = json.sheetName || 'Bulan Ini';
-          localStorage.setItem('fm_rekap_selected_sheet', activeSheetName);
+          activeSheetName = json.sheetName || '';
+          if (activeSheetName) localStorage.setItem('fm_rekap_selected_sheet', activeSheetName);
           const periodEl = document.getElementById('rekap-current-period-text');
-          if (periodEl) periodEl.innerText = activeSheetName;
+          if (periodEl) periodEl.innerText = activeSheetName || 'Bulan Ini';
           const printEl = document.getElementById('print-date-display');
-          if (printEl) printEl.innerText = `Periode: ${activeSheetName} (Dicetak pada: ${new Date().toLocaleDateString('id-ID')})`;
+          if (printEl) printEl.innerText = `Periode: ${activeSheetName || 'Bulan Ini'} (Dicetak pada: ${new Date().toLocaleDateString('id-ID')})`;
 
           if (json.availableSheets && json.availableSheets.length > 0) {
             const listEl = document.getElementById('sheet-picker-list');
@@ -2414,6 +2424,13 @@
           updateStatusUI('online');
           if (isManual) showToast(`Rekap Belanja tersinkron ke Sheet ${activeSheetName}!`);
           return true;
+        }
+        // Jika gagal karena sheet tersimpan bermasalah/tidak ditemukan, otomatis coba ulang ke sheet default SPS 2
+        if (requestedSheet && !skipSavedSheet) {
+          console.warn('SPS 2 sheet error, mencoba sheet default:', json.message);
+          activeSheetName = '';
+          localStorage.removeItem('fm_rekap_selected_sheet');
+          return await fetchFromRekapSps(isManual, true);
         }
         throw new Error(json.message || 'Respon SPS 2 tidak valid');
       } catch (e) {
@@ -3985,7 +4002,10 @@ Terima kasih banyak! 🙏`;
       renderRekapTable();
       updateKasDashboard();
       updateRiwayatModule();
-      await postDataRealTime(SPS_2_URL, { action: 'editRekap', sheetName: activeSheetName, data: updatedItem });
+      const okEdit = await postDataRealTime(SPS_2_URL, { action: 'editRekap', sheetName: activeSheetName, data: updatedItem });
+      if (!okEdit && lastSpsError) {
+        showToast(`Gagal sinkron status ke SPS Belanja: ${lastSpsError}`, 'warn');
+      }
     }
 
     function openBayarCicilanModal(idx) {
@@ -4016,8 +4036,9 @@ Terima kasih banyak! 🙏`;
         saveLocalBackup();
         renderRekapTable();
         updateKasDashboard();
-        await postDataRealTime(SPS_2_URL, { action: 'deleteRekap', sheetName: activeSheetName, data: { rowIndex: deletedRowIndex } });
-        showToast('Tagihan berhasil dihapus!');
+        const okDel = await postDataRealTime(SPS_2_URL, { action: 'deleteRekap', sheetName: activeSheetName, data: { rowIndex: deletedRowIndex } });
+        if (okDel) showToast('Tagihan berhasil dihapus!');
+        else showToast(`Gagal hapus di SPS Belanja${lastSpsError ? ': ' + lastSpsError : ''}`, 'warn');
         fetchFromRekapSps(false);
       }
     }
@@ -4748,7 +4769,12 @@ Terima kasih banyak! 🙏`;
         this.reset();
         toggleRekapModal(false);
         btn.disabled = false;
-        showToast(okRekap ? `Berhasil dicatat ke Sheet ${activeSheetName || 'Aktif'}!` : `Tersimpan lokal & menunggu sinkron Sheet ${activeSheetName || 'Aktif'}.`, okRekap ? 'info' : 'warn');
+        showToast(
+          okRekap
+            ? `Berhasil dicatat ke Sheet ${activeSheetName || 'Aktif'}!`
+            : `Tersimpan lokal (SPS Belanja error${lastSpsError ? ': ' + lastSpsError : ''}).`,
+          okRekap ? 'info' : 'warn'
+        );
       });
 
       document.getElementById('riwayat-koreksi-form')?.addEventListener('submit', async function (ev) {
