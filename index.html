@@ -555,6 +555,35 @@
       .print-table-area tfoot tr.footer-total-row td.val-cell { background-color: #ffe4e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; color: #9f1239 !important; font-weight: 900 !important; white-space: nowrap !important; }
       .print-only-header { display: block !important; }
     }
+
+    /* Targeted mobile sizing for Schedule Event date & time inputs */
+    #se_date,
+    #se_start_time,
+    #se_end_time {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    #se_date::-webkit-date-and-time-value,
+    #se_start_time::-webkit-date-and-time-value,
+    #se_end_time::-webkit-date-and-time-value {
+      text-align: left;
+      min-height: 1.25em;
+    }
+    @media (max-width: 640px) {
+      #se_date,
+      #se_start_time,
+      #se_end_time {
+        min-height: 42px;
+        padding: 0.55rem 0.75rem;
+        font-size: 13px;
+        line-height: 1.25;
+      }
+    }
   </style>
 </head>
 <body class="text-[#0b1d3a] selection:bg-[#8fd5f1]/50">
@@ -1852,18 +1881,18 @@
           <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Judul Jadwal</label>
           <input type="text" id="se_judul" required placeholder="Contoh: Bimbingan TA, Kelas Basis Data, Standup Magang" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
         </div>
-        <div>
+        <div class="min-w-0">
           <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Tanggal</label>
-          <input type="date" id="se_date" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          <input type="date" id="se_date" required class="block w-full min-w-0 max-w-full px-3 py-2.5 sm:py-2 bg-white border border-slate-200 rounded-xl text-[13px] sm:text-xs font-bold text-[#0b1d3a]">
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
+        <div class="grid grid-cols-2 gap-2.5 sm:gap-2">
+          <div class="min-w-0">
             <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Mulai</label>
-            <input type="time" id="se_start_time" required value="09:00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+            <input type="time" id="se_start_time" required value="09:00" class="block w-full min-w-0 max-w-full px-3 py-2.5 sm:py-2 bg-white border border-slate-200 rounded-xl text-[13px] sm:text-xs font-bold text-[#0b1d3a]">
           </div>
-          <div>
+          <div class="min-w-0">
             <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Selesai</label>
-            <input type="time" id="se_end_time" required value="10:00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+            <input type="time" id="se_end_time" required value="10:00" class="block w-full min-w-0 max-w-full px-3 py-2.5 sm:py-2 bg-white border border-slate-200 rounded-xl text-[13px] sm:text-xs font-bold text-[#0b1d3a]">
           </div>
         </div>
         <div>
@@ -1878,6 +1907,18 @@
           <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Hubungkan ke Tugas (Opsional)</label>
           <select id="se_tugas_id" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
             <option value="">— Tidak terhubung tugas —</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Pengingat Google Calendar</label>
+          <select id="se_reminder" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+            <option value="15">15 menit sebelum (Notifikasi HP)</option>
+            <option value="30">30 menit sebelum (Notifikasi HP)</option>
+            <option value="60">1 jam sebelum (Notifikasi HP)</option>
+            <option value="15,60" selected>15 menit &amp; 1 jam sebelum</option>
+            <option value="1440">1 hari sebelum (H-1)</option>
+            <option value="0">Masuk Google Calendar (tanpa alarm)</option>
+            <option value="off">Jangan sinkron ke Google Calendar</option>
           </select>
         </div>
         <div>
@@ -1973,6 +2014,16 @@
           <select id="st_kategori" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]"></select>
         </div>
         <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Pengingat Deadline Google Calendar</label>
+          <select id="st_reminder" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+            <option value="60,1440" selected>1 jam &amp; 1 hari sebelum deadline</option>
+            <option value="15">15 menit sebelum deadline</option>
+            <option value="60">1 jam sebelum deadline</option>
+            <option value="1440">1 hari sebelum deadline (H-1)</option>
+            <option value="off">Jangan masukkan ke Google Calendar</option>
+          </select>
+        </div>
+        <div>
           <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Catatan</label>
           <textarea id="st_catatan" rows="2" placeholder="Detail pekerjaan, link dokumen, atau target..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-[#0b1d3a]"></textarea>
         </div>
@@ -2038,6 +2089,10 @@
         <div id="sed_task_row" class="hidden flex items-center gap-2">
           <i class="fa-solid fa-list-check text-teal-600 w-4 text-center"></i>
           <span id="sed_task_val" class="font-bold text-teal-800 truncate"></span>
+        </div>
+        <div id="sed_reminder_row" class="hidden flex items-center gap-2">
+          <i class="fa-solid fa-bell text-amber-500 w-4 text-center"></i>
+          <span id="sed_reminder_val" class="text-[11px] font-bold text-[#526582]"></span>
         </div>
         <div id="sed_note_row" class="hidden p-2.5 rounded-xl bg-[#f2f7fc] border border-slate-200 text-[11px] text-[#526582] leading-relaxed">
           <span id="sed_note_val"></span>
@@ -2481,9 +2536,11 @@
       window.fmStartLandingAnim();
     })();
 
-    // ================= KONFIGURASI DUAL-SPS & STATE APLIKASI =================
+    // ================= KONFIGURASI TRI-SPS & STATE APLIKASI =================
+    // SPS 1: Kas & Jastip | SPS 2: Rekap Belanja | SPS 3: Schedule Maker & Google Calendar
     const SPS_1_URL = 'https://script.google.com/macros/s/AKfycbwqm7EtNuVkZQUxGKiH99qAt1KGA1pAbBn-2ER_GUra3Ar5aw2Y4yEL2hQ651KoMGpW/exec';
     const SPS_2_URL = 'https://script.google.com/macros/s/AKfycbxRN9AvxOLftrzGwH2N8THzfqhaJU3lQylcNPc3jVyrf4mzIIc9Gq6ipy4qpOfUfiB2/exec';
+    const SPS_3_URL = 'https://script.google.com/macros/s/AKfycbzBz_gyf26Lnsd0MqQqLKuFjyPwfYSnRATEdJINMK173E67GOFaLZmhA7BHf75I3lF7kQ/exec';
 
     let rekapBelanjaList = [];
     let kasTransactions = [];
@@ -2549,6 +2606,7 @@
     let lastSpsKasSheetName = '';
     let spsKasEmptyNotified = false;
     let lastSpsError = '';
+    let lastSpsResponseJson = null;
     if (activeSheetName === 'Bulan Ini') {
       activeSheetName = '';
       localStorage.removeItem('fm_rekap_selected_sheet');
@@ -2760,8 +2818,10 @@
           return false;
         }
         const txt = await resp.text();
+        lastSpsResponseJson = null;
         try {
           const json = JSON.parse(txt);
+          lastSpsResponseJson = json;
           if (json && json.status && json.status !== 'success') {
             lastSpsError = json.message || 'Gagal diproses oleh Apps Script';
             console.error('SPS mengembalikan error:', json);
@@ -2770,6 +2830,7 @@
         } catch (_) {}
         return true;
       } catch (err) {
+        lastSpsResponseJson = null;
         try {
           await fetch(url, {
             method: 'POST',
@@ -2810,26 +2871,26 @@
         }
         for (const p of [...pendingAgendaKategoriSync].reverse()) {
           if (Date.now() - (p.ts || 0) < 3500) continue;
-          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: p.entry });
+          await postDataRealTime(SPS_3_URL, { action: 'saveAgendaKategori', data: p.entry });
         }
         for (const p of [...pendingAgendaTugasSync].reverse()) {
           if (Date.now() - (p.ts || 0) < 3500) continue;
-          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: p.entry });
+          await postDataRealTime(SPS_3_URL, { action: 'saveAgendaTugas', data: p.entry });
         }
         for (const p of [...pendingAgendaJadwalSync].reverse()) {
           if (Date.now() - (p.ts || 0) < 3500) continue;
-          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: p.entry });
+          await postDataRealTime(SPS_3_URL, { action: 'saveAgendaJadwal', data: p.entry });
         }
         for (const id of [...deletedAgendaJadwalIds]) {
-          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id });
+          const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaJadwal', id });
           if (ok) deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(id));
         }
         for (const id of [...deletedAgendaTugasIds]) {
-          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaTugas', id });
+          const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaTugas', id });
           if (ok) deletedAgendaTugasIds = deletedAgendaTugasIds.filter((x) => String(x) !== String(id));
         }
         for (const id of [...deletedAgendaKategoriIds]) {
-          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaKategori', id });
+          const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaKategori', id });
           if (ok) deletedAgendaKategoriIds = deletedAgendaKategoriIds.filter((x) => String(x) !== String(id));
         }
         savePendingSyncState();
@@ -2893,17 +2954,12 @@
             syncCustomersFromOrders();
           }
 
-          if (typeof mergeAgendaFromSps1 === 'function') {
-            mergeAgendaFromSps1(json);
-          }
-
           saveLocalBackup();
           updateKasDashboard();
           if (typeof updateJastipModule === 'function') updateJastipModule();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
-          if (typeof updateScheduleModule === 'function') updateScheduleModule();
           updateStatusUI('online');
-          if (isManual) showToast('Data Kas, Jastip & Schedule tersinkron!');
+          if (isManual) showToast('Data Kas & Jastip tersinkron!');
           return true;
         }
         throw new Error(json.message || 'Respon SPS 1 tidak valid');
@@ -2990,16 +3046,45 @@
 
     function toggleSheetDropdownModal() { toggleModal('modal-sheet-picker', true); }
 
+    async function fetchFromScheduleSps(isManual = false) {
+      try {
+        const resp = await fetch(`${SPS_3_URL}?action=getSchedule&_cb=${Date.now()}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+        if (json.status === 'success') {
+          if (typeof mergeAgendaFromSps === 'function') {
+            mergeAgendaFromSps(json);
+          }
+          saveLocalBackup();
+          if (typeof updateScheduleModule === 'function') updateScheduleModule();
+          updateStatusUI('online');
+          if (isManual) showToast('Schedule Maker & Google Calendar tersinkron!');
+          return true;
+        }
+        throw new Error(json.message || 'Respon SPS Schedule tidak valid');
+      } catch (e) {
+        console.warn('SPS Schedule Offline:', e);
+        return false;
+      }
+    }
+
     async function syncAllRealTime(isManual = false) {
       updateStatusUI('syncing');
       await flushPendingSyncQueues();
-      const [ok1, ok2] = await Promise.all([fetchFromSps1(false), fetchFromRekapSps(false)]);
-      if (ok1 && ok2) {
+      const [ok1, ok2, ok3] = await Promise.all([
+        fetchFromSps1(false),
+        fetchFromRekapSps(false),
+        fetchFromScheduleSps(false)
+      ]);
+      if (ok1 && ok2 && ok3) {
         updateStatusUI('online');
-        if (isManual) showToast('Sinkronisasi Real-Time Berhasil!');
+        if (isManual) showToast('Semua SPS (Kas, Belanja & Schedule) Tersinkron!');
+      } else if (ok1 || ok2 || ok3) {
+        updateStatusUI('online');
+        if (isManual) showToast('Sebagian SPS tersinkron. Pastikan semua skrip SPS sudah di-deploy.', 'warn');
       } else {
         updateStatusUI('offline');
-        if (isManual) showToast('Sebagian/semua SPS gagal dihubungi. Data tersimpan lokal.', 'warn');
+        if (isManual) showToast('SPS gagal dihubungi. Data tersimpan lokal.', 'warn');
       }
     }
 
@@ -5207,6 +5292,7 @@ Terima kasih banyak! 🙏`;
       const status = /^selesai$/i.test(rawStatus) ? 'Selesai' : 'Aktif';
       const rawPrio = String(r.Prioritas || r.prioritas || 'Sedang').trim();
       const prio = /^tinggi$/i.test(rawPrio) ? 'Tinggi' : (/^rendah$/i.test(rawPrio) ? 'Rendah' : 'Sedang');
+      const rawRem = r.Pengingat_Menit !== undefined ? r.Pengingat_Menit : (r.pengingat_menit !== undefined ? r.pengingat_menit : '60,1440');
       return {
         ID_Tugas: String(r.ID_Tugas || r.id_tugas || r.id || `TGS-${Date.now()}`).trim(),
         Judul: String(r.Judul || r.judul || '').trim(),
@@ -5215,11 +5301,14 @@ Terima kasih banyak! 🙏`;
         Status: status,
         ID_Kategori: String(r.ID_Kategori || r.id_kategori || (agendaKategori[0]?.ID_Kategori || 'KAT-PRIBADI')).trim(),
         Catatan: String(r.Catatan || r.catatan || '').trim(),
-        Waktu_Selesai: normalizeAgendaDateTime(r.Waktu_Selesai || r.waktu_selesai || '', false)
+        Waktu_Selesai: normalizeAgendaDateTime(r.Waktu_Selesai || r.waktu_selesai || '', false),
+        Pengingat_Menit: String(rawRem === '' ? '60,1440' : rawRem).trim(),
+        GCal_Event_ID: String(r.GCal_Event_ID || r.gcal_event_id || '').trim()
       };
     }
     function normalizeAgendaJadwal(raw) {
       const r = raw || {};
+      const rawRem = r.Pengingat_Menit !== undefined ? r.Pengingat_Menit : (r.pengingat_menit !== undefined ? r.pengingat_menit : '15,60');
       return {
         ID_Jadwal: String(r.ID_Jadwal || r.id_jadwal || r.id || `JDW-${Date.now()}`).trim(),
         Judul: String(r.Judul || r.judul || '').trim(),
@@ -5228,8 +5317,24 @@ Terima kasih banyak! 🙏`;
         ID_Kategori: String(r.ID_Kategori || r.id_kategori || (agendaKategori[0]?.ID_Kategori || 'KAT-PRIBADI')).trim(),
         Lokasi_atau_Link: String(r.Lokasi_atau_Link || r.lokasi_atau_link || r.lokasi || '').trim(),
         Catatan: String(r.Catatan || r.catatan || '').trim(),
-        ID_Tugas: String(r.ID_Tugas || r.id_tugas || '').trim()
+        ID_Tugas: String(r.ID_Tugas || r.id_tugas || '').trim(),
+        Pengingat_Menit: String(rawRem === '' ? '15,60' : rawRem).trim(),
+        GCal_Event_ID: String(r.GCal_Event_ID || r.gcal_event_id || '').trim()
       };
+    }
+    function formatGCalReminderLabel(remStr) {
+      const s = String(remStr || '').trim().toLowerCase();
+      if (s === 'off') return 'Tidak disinkron ke Google Calendar';
+      if (s === '0') return 'Google Calendar aktif (tanpa alarm)';
+      const map = {
+        '15': 'Google Calendar: 15 menit sebelum',
+        '30': 'Google Calendar: 30 menit sebelum',
+        '60': 'Google Calendar: 1 jam sebelum',
+        '15,60': 'Google Calendar: 15 menit & 1 jam sebelum',
+        '60,1440': 'Google Calendar: 1 jam & H-1 sebelum',
+        '1440': 'Google Calendar: 1 hari sebelum (H-1)'
+      };
+      return map[s] || `Google Calendar: ${s} menit sebelum`;
     }
 
     function enqueuePendingAgenda(kind, entry) {
@@ -5250,7 +5355,7 @@ Terima kasih banyak! 🙏`;
       savePendingSyncState();
     }
 
-    function mergeAgendaFromSps1(json) {
+    function mergeAgendaFromSps(json) {
       if (!json) return;
       if (Array.isArray(json.agendaKategori)) {
         const delSet = new Set(deletedAgendaKategoriIds.map(String));
@@ -5271,7 +5376,7 @@ Terima kasih banyak! 🙏`;
           agendaKategori = [...DEFAULT_AGENDA_KATEGORI];
           agendaKategori.forEach((cat) => {
             enqueuePendingAgenda('kategori', cat);
-            postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: cat });
+            postDataRealTime(SPS_3_URL, { action: 'saveAgendaKategori', data: cat });
           });
         }
       }
@@ -5288,6 +5393,15 @@ Terima kasih banyak! 🙏`;
         pendingAgendaTugasSync.forEach((p) => {
           if (!delSet.has(String(p.id))) mergedMap.set(String(p.id), normalizeAgendaTugas(p.entry));
         });
+        if (serverTasks.length === 0 && agendaTugas.length > 0) {
+          agendaTugas.forEach((t) => {
+            const sid = String(t.ID_Tugas);
+            if (!delSet.has(sid) && !mergedMap.has(sid)) {
+              mergedMap.set(sid, normalizeAgendaTugas(t));
+              enqueuePendingAgenda('tugas', t);
+            }
+          });
+        }
         agendaTugas = Array.from(mergedMap.values());
       }
 
@@ -5303,6 +5417,15 @@ Terima kasih banyak! 🙏`;
         pendingAgendaJadwalSync.forEach((p) => {
           if (!delSet.has(String(p.id))) mergedMap.set(String(p.id), normalizeAgendaJadwal(p.entry));
         });
+        if (serverEvents.length === 0 && agendaJadwal.length > 0) {
+          agendaJadwal.forEach((ev) => {
+            const sid = String(ev.ID_Jadwal);
+            if (!delSet.has(sid) && !mergedMap.has(sid)) {
+              mergedMap.set(sid, normalizeAgendaJadwal(ev));
+              enqueuePendingAgenda('jadwal', ev);
+            }
+          });
+        }
         agendaJadwal = Array.from(mergedMap.values());
       }
 
@@ -5501,6 +5624,13 @@ Terima kasih banyak! 🙏`;
         taskRow.classList.add('hidden');
       }
 
+      const remRow = document.getElementById('sed_reminder_row');
+      const remVal = document.getElementById('sed_reminder_val');
+      if (remRow && remVal) {
+        remRow.classList.remove('hidden');
+        remVal.textContent = formatGCalReminderLabel(ev.Pengingat_Menit || '15,60');
+      }
+
       const noteRow = document.getElementById('sed_note_row');
       const noteVal = document.getElementById('sed_note_val');
       if (ev.Catatan && noteRow && noteVal) {
@@ -5522,13 +5652,13 @@ Terima kasih banyak! 🙏`;
         saveLocalBackup();
         toggleModal('modal-schedule-event-detail', false);
         updateScheduleModule();
-        const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id: ev.ID_Jadwal });
+        const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaJadwal', id: ev.ID_Jadwal });
         if (ok) {
           deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(ev.ID_Jadwal));
           savePendingSyncState();
-          showToast('Jadwal dihapus & tersinkron ke SPS 1!');
+          showToast('Jadwal dihapus dari SPS Schedule & Google Calendar!');
         } else {
-          showToast('Jadwal dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+          showToast('Jadwal dihapus lokal (menunggu sinkron SPS Schedule).', 'warn');
         }
       };
 
@@ -6098,6 +6228,8 @@ Terima kasih banyak! 🙏`;
         document.getElementById('se_kategori').value = editEv.ID_Kategori;
         document.getElementById('se_lokasi').value = editEv.Lokasi_atau_Link || '';
         document.getElementById('se_tugas_id').value = editEv.ID_Tugas || '';
+        const remEl = document.getElementById('se_reminder');
+        if (remEl) remEl.value = editEv.Pengingat_Menit || '15,60';
         document.getElementById('se_catatan').value = editEv.Catatan || '';
       } else {
         if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-calendar-plus text-[#5b7cf0]"></i> Tambah Jadwal';
@@ -6111,6 +6243,8 @@ Terima kasih banyak! 🙏`;
         if (opts.categoryId) document.getElementById('se_kategori').value = opts.categoryId;
         document.getElementById('se_lokasi').value = opts.lokasi || '';
         document.getElementById('se_tugas_id').value = opts.taskId || '';
+        const remEl = document.getElementById('se_reminder');
+        if (remEl) remEl.value = '15,60';
         document.getElementById('se_catatan').value = opts.catatan || '';
       }
       toggleModal('modal-schedule-event', true);
@@ -6152,7 +6286,7 @@ Terima kasih banyak! 🙏`;
     async function deleteScheduleEventFromModal() {
       const id = document.getElementById('se_id')?.value;
       if (!id) return;
-      const okConfirm = await askConfirm('Hapus jadwal ini dari Schedule Maker & SPS 1?');
+      const okConfirm = await askConfirm('Hapus jadwal ini dari Schedule Maker, SPS Schedule & Google Calendar?');
       if (!okConfirm) return;
       agendaJadwal = agendaJadwal.filter((e) => String(e.ID_Jadwal) !== String(id));
       pendingAgendaJadwalSync = pendingAgendaJadwalSync.filter((p) => String(p.id) !== String(id));
@@ -6161,13 +6295,13 @@ Terima kasih banyak! 🙏`;
       saveLocalBackup();
       toggleModal('modal-schedule-event', false);
       updateScheduleModule();
-      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id });
+      const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaJadwal', id });
       if (ok) {
         deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(id));
         savePendingSyncState();
-        showToast('Jadwal dihapus & disinkronkan ke SPS 1!');
+        showToast('Jadwal dihapus & disinkronkan ke SPS Schedule!');
       } else {
-        showToast('Jadwal dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+        showToast('Jadwal dihapus lokal (menunggu sinkron SPS Schedule).', 'warn');
       }
     }
 
@@ -6190,6 +6324,8 @@ Terima kasih banyak! 🙏`;
         document.getElementById('st_prioritas').value = editTask.Prioritas || 'Sedang';
         document.getElementById('st_status').value = editTask.Status || 'Aktif';
         document.getElementById('st_kategori').value = editTask.ID_Kategori;
+        const tRemEl = document.getElementById('st_reminder');
+        if (tRemEl) tRemEl.value = editTask.Pengingat_Menit || '60,1440';
         document.getElementById('st_catatan').value = editTask.Catatan || '';
       } else {
         if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-list-check text-teal-600"></i> Buat Tugas';
@@ -6199,6 +6335,8 @@ Terima kasih banyak! 🙏`;
         document.getElementById('st_deadline_time').value = '';
         document.getElementById('st_prioritas').value = 'Sedang';
         document.getElementById('st_status').value = 'Aktif';
+        const tRemEl = document.getElementById('st_reminder');
+        if (tRemEl) tRemEl.value = '60,1440';
       }
       toggleModal('modal-schedule-task', true);
     }
@@ -6206,7 +6344,7 @@ Terima kasih banyak! 🙏`;
     async function deleteScheduleTaskFromModal() {
       const id = document.getElementById('st_id')?.value;
       if (!id) return;
-      const okConfirm = await askConfirm('Hapus tugas ini dari Schedule Maker & SPS 1?');
+      const okConfirm = await askConfirm('Hapus tugas ini dari Schedule Maker & SPS Schedule?');
       if (!okConfirm) return;
       agendaTugas = agendaTugas.filter((t) => String(t.ID_Tugas) !== String(id));
       pendingAgendaTugasSync = pendingAgendaTugasSync.filter((p) => String(p.id) !== String(id));
@@ -6215,13 +6353,13 @@ Terima kasih banyak! 🙏`;
       saveLocalBackup();
       toggleModal('modal-schedule-task', false);
       updateScheduleModule();
-      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaTugas', id });
+      const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaTugas', id });
       if (ok) {
         deletedAgendaTugasIds = deletedAgendaTugasIds.filter((x) => String(x) !== String(id));
         savePendingSyncState();
-        showToast('Tugas dihapus & disinkronkan ke SPS 1!');
+        showToast('Tugas dihapus & disinkronkan ke SPS Schedule!');
       } else {
-        showToast('Tugas dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+        showToast('Tugas dihapus lokal (menunggu sinkron SPS Schedule).', 'warn');
       }
     }
 
@@ -6239,11 +6377,11 @@ Terima kasih banyak! 🙏`;
       enqueuePendingAgenda('tugas', updated);
       saveLocalBackup();
       updateScheduleModule();
-      const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: updated });
+      const ok = await postDataRealTime(SPS_3_URL, { action: 'saveAgendaTugas', data: updated });
       if (ok) {
         showToast(nextDone ? 'Tugas ditandai selesai & tersinkron!' : 'Tugas diaktifkan kembali!');
       } else {
-        showToast(nextDone ? 'Tugas ditandai selesai (menunggu sinkron SPS 1).' : 'Status tugas diperbarui lokal.', 'warn');
+        showToast(nextDone ? 'Tugas ditandai selesai (menunggu sinkron SPS Schedule).' : 'Status tugas diperbarui lokal.', 'warn');
       }
     }
 
@@ -6280,7 +6418,7 @@ Terima kasih banyak! 🙏`;
 
     async function deleteScheduleCategory(catId) {
       if (agendaKategori.length <= 1) return showToast('Minimal harus ada 1 kategori aktif.', 'warn');
-      const okConfirm = await askConfirm('Hapus kategori ini dari Schedule Maker & SPS 1?');
+      const okConfirm = await askConfirm('Hapus kategori ini dari Schedule Maker & SPS Schedule?');
       if (!okConfirm) return;
       agendaKategori = agendaKategori.filter((c) => String(c.ID_Kategori) !== String(catId));
       pendingAgendaKategoriSync = pendingAgendaKategoriSync.filter((p) => String(p.id) !== String(catId));
@@ -6290,7 +6428,7 @@ Terima kasih banyak! 🙏`;
       saveLocalBackup();
       renderScheduleCategoriesList();
       updateScheduleModule();
-      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaKategori', id: catId });
+      const ok = await postDataRealTime(SPS_3_URL, { action: 'deleteAgendaKategori', id: catId });
       if (ok) {
         deletedAgendaKategoriIds = deletedAgendaKategoriIds.filter((x) => String(x) !== String(catId));
         savePendingSyncState();
@@ -6328,6 +6466,7 @@ Terima kasih banyak! 🙏`;
         if (!judul) return showToast('Judul jadwal wajib diisi!', 'warn');
         if (timeStrToMins(endT) <= timeStrToMins(startT)) return showToast('Jam selesai harus lebih akhir dari jam mulai.', 'warn');
 
+        const existingEv = editId ? agendaJadwal.find((x) => String(x.ID_Jadwal) === String(editId)) : null;
         const entry = normalizeAgendaJadwal({
           ID_Jadwal: editId || `JDW-${Date.now()}`,
           Judul: judul,
@@ -6336,7 +6475,9 @@ Terima kasih banyak! 🙏`;
           ID_Kategori: document.getElementById('se_kategori').value,
           Lokasi_atau_Link: document.getElementById('se_lokasi').value.trim(),
           Catatan: document.getElementById('se_catatan').value.trim(),
-          ID_Tugas: document.getElementById('se_tugas_id').value.trim()
+          ID_Tugas: document.getElementById('se_tugas_id').value.trim(),
+          Pengingat_Menit: document.getElementById('se_reminder')?.value || '15,60',
+          GCal_Event_ID: existingEv ? (existingEv.GCal_Event_ID || '') : ''
         });
 
         const idx = agendaJadwal.findIndex((x) => String(x.ID_Jadwal) === String(entry.ID_Jadwal));
@@ -6349,9 +6490,20 @@ Terima kasih banyak! 🙏`;
         toggleModal('modal-schedule-event', false);
         updateScheduleModule();
 
-        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: entry });
-        if (ok) showToast(editId ? 'Jadwal diperbarui & tersinkron ke SPS 1!' : 'Jadwal ditambahkan & tersinkron ke SPS 1!');
-        else showToast('Jadwal disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+        const ok = await postDataRealTime(SPS_3_URL, { action: 'saveAgendaJadwal', data: entry });
+        if (ok) {
+          if (lastSpsResponseJson && lastSpsResponseJson.gcalId) {
+            entry.GCal_Event_ID = String(lastSpsResponseJson.gcalId);
+            saveLocalBackup();
+          }
+          if (lastSpsResponseJson && lastSpsResponseJson.gcalError) {
+            showToast('Jadwal masuk SPS 3, tapi Google Calendar butuh izin (jalankan setupIzinDanSinkronKalender di SPS 3).', 'warn');
+          } else {
+            showToast(editId ? 'Jadwal & pengingat Google Calendar diperbarui!' : 'Jadwal tersimpan & pengingat masuk Google Calendar!');
+          }
+        } else {
+          showToast(lastSpsError ? `Gagal sinkron SPS 3: ${lastSpsError}` : 'Jadwal disimpan lokal (menunggu sinkron SPS Schedule).', 'warn');
+        }
       });
 
       document.getElementById('schedule-move-form')?.addEventListener('submit', async function (e) {
@@ -6377,9 +6529,16 @@ Terima kasih banyak! 🙏`;
         toggleModal('modal-schedule-move', false);
         updateScheduleModule();
 
-        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: updated });
-        if (ok) showToast('Jadwal dipindahkan & tersinkron ke SPS 1!');
-        else showToast('Jadwal dipindahkan lokal (menunggu sinkron SPS 1).', 'warn');
+        const ok = await postDataRealTime(SPS_3_URL, { action: 'saveAgendaJadwal', data: updated });
+        if (ok) {
+          if (lastSpsResponseJson && lastSpsResponseJson.gcalId) {
+            updated.GCal_Event_ID = String(lastSpsResponseJson.gcalId);
+            saveLocalBackup();
+          }
+          showToast('Jadwal dipindahkan & pengingat Google Calendar diperbarui!');
+        } else {
+          showToast(lastSpsError ? `Gagal sinkron SPS 3: ${lastSpsError}` : 'Jadwal dipindahkan lokal (menunggu sinkron SPS Schedule).', 'warn');
+        }
       });
 
       document.getElementById('schedule-task-form')?.addEventListener('submit', async function (e) {
@@ -6404,7 +6563,9 @@ Terima kasih banyak! 🙏`;
           Status: status,
           ID_Kategori: document.getElementById('st_kategori').value,
           Catatan: document.getElementById('st_catatan').value.trim(),
-          Waktu_Selesai: waktuSelesai
+          Waktu_Selesai: waktuSelesai,
+          Pengingat_Menit: document.getElementById('st_reminder')?.value || '60,1440',
+          GCal_Event_ID: existing ? (existing.GCal_Event_ID || '') : ''
         });
 
         const idx = agendaTugas.findIndex((x) => String(x.ID_Tugas) === String(entry.ID_Tugas));
@@ -6416,9 +6577,20 @@ Terima kasih banyak! 🙏`;
         toggleModal('modal-schedule-task', false);
         updateScheduleModule();
 
-        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: entry });
-        if (ok) showToast(editId ? 'Tugas diperbarui & tersinkron ke SPS 1!' : 'Tugas dibuat & tersinkron ke SPS 1!');
-        else showToast('Tugas disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+        const ok = await postDataRealTime(SPS_3_URL, { action: 'saveAgendaTugas', data: entry });
+        if (ok) {
+          if (lastSpsResponseJson && lastSpsResponseJson.gcalId) {
+            entry.GCal_Event_ID = String(lastSpsResponseJson.gcalId);
+            saveLocalBackup();
+          }
+          if (lastSpsResponseJson && lastSpsResponseJson.gcalError) {
+            showToast('Tugas masuk SPS 3, tapi Google Calendar butuh izin (jalankan setupIzinDanSinkronKalender di SPS 3).', 'warn');
+          } else {
+            showToast(editId ? 'Tugas & pengingat Google Calendar diperbarui!' : 'Tugas dibuat & pengingat masuk Google Calendar!');
+          }
+        } else {
+          showToast(lastSpsError ? `Gagal sinkron SPS 3: ${lastSpsError}` : 'Tugas disimpan lokal (menunggu sinkron SPS Schedule).', 'warn');
+        }
       });
 
       document.getElementById('schedule-category-form')?.addEventListener('submit', async function (e) {
@@ -6446,9 +6618,9 @@ Terima kasih banyak! 🙏`;
         renderScheduleCategoriesList();
         updateScheduleModule();
 
-        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: entry });
-        if (ok) showToast('Kategori tersimpan & tersinkron ke SPS 1!');
-        else showToast('Kategori disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+        const ok = await postDataRealTime(SPS_3_URL, { action: 'saveAgendaKategori', data: entry });
+        if (ok) showToast('Kategori tersimpan & tersinkron ke SPS Schedule!');
+        else showToast('Kategori disimpan lokal (menunggu sinkron SPS Schedule).', 'warn');
       });
     }
 
@@ -6789,6 +6961,7 @@ Terima kasih banyak! 🙏`;
         if (document.body.classList.contains('dashboard-open')) {
           await flushPendingSyncQueues();
           if (currentAppTab === 'tab-rekap') fetchFromRekapSps(false);
+          else if (currentAppTab === 'tab-schedule') fetchFromScheduleSps(false);
           else fetchFromSps1(false);
         }
       }, 10000);
