@@ -540,7 +540,7 @@
       #splash-screen, header, .bottom-nav-bar, .no-print, .modal-overlay, .background-blobs, .fm-dash-bowl, #fm-toast, #fm-confirm { display: none !important; }
       #main-app-container { display: block !important; opacity: 1 !important; pointer-events: auto !important; padding: 0 !important; margin: 0 !important; width: 100% !important; min-height: auto !important; overflow: visible !important; }
       #main-app-container main { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      #module-kas, #module-jastip, #module-riwayat { display: none !important; }
+      #module-kas, #module-jastip, #module-riwayat, #module-schedule { display: none !important; }
       #module-rekap { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       .banner-glass-card { background: #ffffff !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
       .print-table-area { display: block !important; width: 100% !important; overflow: visible !important; }
@@ -581,6 +581,7 @@
         <button type="button" onclick="unlockDashboard('tab-kas')">Kas</button>
         <button type="button" onclick="unlockDashboard('tab-jastip')">Jastip</button>
         <button type="button" onclick="unlockDashboard('tab-rekap')">Rekap Belanja</button>
+        <button type="button" onclick="unlockDashboard('tab-schedule')">Schedule</button>
         <button type="button" onclick="unlockDashboard('tab-riwayat')">Riwayat</button>
       </nav>
 
@@ -695,7 +696,7 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-4 gap-2.5" aria-label="Pintasan cepat modul FlowMaster">
+            <div class="grid grid-cols-5 gap-2" aria-label="Pintasan cepat modul FlowMaster">
               <button type="button" onclick="unlockDashboard('tab-kas')" title="Kas" aria-label="Buka Kas" class="h-12 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md flex items-center justify-center text-[#2fe0d0] transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-wallet text-base"></i>
               </button>
@@ -704,6 +705,9 @@
               </button>
               <button type="button" onclick="unlockDashboard('tab-rekap')" title="Rekap Belanja" aria-label="Buka Rekap Belanja" class="h-12 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md flex items-center justify-center text-[#d2daff] transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-table-list text-base"></i>
+              </button>
+              <button type="button" onclick="unlockDashboard('tab-schedule')" title="Schedule Maker" aria-label="Buka Schedule Maker" class="h-12 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md flex items-center justify-center text-violet-300 transition active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-calendar-check text-base"></i>
               </button>
               <button type="button" onclick="unlockDashboard('tab-riwayat')" title="Riwayat" aria-label="Buka Riwayat" class="h-12 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md flex items-center justify-center text-white transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-clock-rotate-left text-base"></i>
@@ -727,7 +731,7 @@
 
     <!-- HEADER PILL SELARAS HALAMAN PEMBUKA -->
     <header class="px-3 md:px-6 pt-3.5 pb-2 no-print relative z-30">
-      <div class="max-w-lg mx-auto fm-dash-nav py-2 pl-4 pr-2.5 flex items-center justify-between gap-2 relative">
+      <div id="fm-dash-header-inner" class="max-w-lg mx-auto fm-dash-nav py-2 pl-4 pr-2.5 flex items-center justify-between gap-2 relative transition-all duration-200">
         <div class="relative flex items-center gap-2.5 min-w-0" id="flowmaster-menu-container">
           <button type="button" onclick="returnToSplash()" class="flex items-center gap-2 text-left cursor-pointer select-none active:scale-95 transition group shrink-0" title="Kembali ke Halaman Depan">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="shrink-0 group-hover:rotate-6 transition-transform">
@@ -747,7 +751,7 @@
           <div id="flowmaster-dropdown" class="dropdown-closed absolute top-full left-0 mt-3 w-60 md:w-64 banner-glass-card rounded-2xl p-2 shadow-2xl border border-[#0b1d3a]/10 z-50 space-y-1">
             <div class="px-2.5 py-1 border-b border-[#0b1d3a]/10 mb-1 flex items-center justify-between">
               <span class="text-[9px] font-black uppercase text-[#526582] tracking-wider">Pilih Modul</span>
-              <span class="text-[9px] text-[#5b7cf0] font-bold">4 Menu</span>
+              <span class="text-[9px] text-[#5b7cf0] font-bold">5 Menu</span>
             </div>
             <button onclick="selectMenu('tab-kas', 'Kas & Dompet')" id="item-tab-kas" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[#f2f7fc] text-left transition bg-[#eef6fd]">
               <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-[#0b1d3a] text-[#2fe0d0] flex items-center justify-center text-xs"><i class="fa-solid fa-wallet"></i></div><span class="text-xs font-extrabold text-[#0b1d3a]">Kas &amp; Dompet</span></div>
@@ -759,6 +763,10 @@
             </button>
             <button onclick="selectMenu('tab-rekap', 'Rekap Belanja')" id="item-tab-rekap" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[#f2f7fc] text-left transition">
               <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-cyan-50 text-teal-700 flex items-center justify-center text-xs"><i class="fa-solid fa-table-list"></i></div><span class="text-xs font-extrabold text-[#0b1d3a]">Rekap Belanja</span></div>
+              <i class="fa-solid fa-check text-xs text-teal-600 active-check-icon hidden"></i>
+            </button>
+            <button onclick="selectMenu('tab-schedule', 'Schedule Maker')" id="item-tab-schedule" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[#f2f7fc] text-left transition">
+              <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center text-xs"><i class="fa-solid fa-calendar-check"></i></div><span class="text-xs font-extrabold text-[#0b1d3a]">Schedule Maker</span></div>
               <i class="fa-solid fa-check text-xs text-teal-600 active-check-icon hidden"></i>
             </button>
             <button onclick="selectMenu('tab-riwayat', 'Riwayat Transaksi')" id="item-tab-riwayat" class="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[#f2f7fc] text-left transition">
@@ -779,7 +787,7 @@
     </header>
 
     <!-- CONTENT AREA -->
-    <main class="max-w-lg mx-auto w-full px-3 md:px-4 pt-2 pb-6 space-y-4 relative z-10">
+    <main id="fm-dash-main" class="max-w-lg mx-auto w-full px-3 md:px-4 pt-2 pb-6 space-y-4 relative z-10 transition-all duration-200">
 
       <!-- ============================================================== -->
       <!-- [MODUL 1] KAS DAN DOMPET                                       -->
@@ -1101,15 +1109,170 @@
         <div id="riwayat-cards-container" class="space-y-3"></div>
       </section>
 
+      <!-- ================= MODUL 5: SCHEDULE MAKER ================= -->
+      <section id="module-schedule" class="hidden space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <h1 class="text-lg font-extrabold text-[#0b1d3a] tracking-tight">Schedule Maker</h1>
+            <span class="text-[11px] text-[#526582] font-semibold block truncate" id="schedule-today-subtitle">Agenda &amp; Tugas Harian</span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="openScheduleCategoryModal()" class="px-2.5 py-1.5 rounded-xl banner-glass-card text-[11px] font-extrabold text-[#0b1d3a] hover:bg-white flex items-center gap-1 active:scale-95 transition" title="Kelola Kategori">
+              <i class="fa-solid fa-palette text-[#5b7cf0]"></i><span>Kategori</span>
+            </button>
+            <button type="button" onclick="openScheduleEventModal()" class="px-3 py-1.5 rounded-xl bg-[#0b1d3a] hover:bg-[#142c54] text-[#2fe0d0] text-[11px] font-extrabold flex items-center gap-1 shadow active:scale-95 transition">
+              <i class="fa-solid fa-plus"></i><span>Jadwal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RINGKASAN KPI SCHEDULE MAKER -->
+        <div class="fm-navy-kpi rounded-2xl p-3.5 space-y-2.5">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-white/10 rounded-xl p-2">
+              <span class="text-[10px] font-bold text-[#8fe6f4] uppercase block">Hari Ini</span>
+              <h4 class="text-sm font-extrabold text-[#2fe0d0] mt-0.5 tabular-nums" id="sched-kpi-today-count">0 Jadwal</h4>
+            </div>
+            <div class="bg-white/10 rounded-xl p-2">
+              <span class="text-[10px] font-bold text-[#d2daff] uppercase block">Tugas Aktif</span>
+              <h4 class="text-sm font-extrabold text-white mt-0.5 tabular-nums" id="sched-kpi-active-tasks">0 Tugas</h4>
+            </div>
+            <div class="bg-white/10 rounded-xl p-2">
+              <span class="text-[10px] font-bold text-rose-200 uppercase block">Terlambat</span>
+              <h4 class="text-sm font-extrabold text-rose-300 mt-0.5 tabular-nums" id="sched-kpi-overdue-tasks">0 Tugas</h4>
+            </div>
+          </div>
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/15">
+            <div class="min-w-0">
+              <span class="text-[10px] uppercase tracking-wider text-[#8fe6f4] font-bold block">Agenda Berikutnya</span>
+              <span class="text-xs font-bold text-white block truncate" id="sched-kpi-next-event">Belum ada jadwal tersisa hari ini</span>
+            </div>
+            <button type="button" onclick="openScheduleTaskModal()" class="px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-[11px] font-extrabold shrink-0 active:scale-95 transition flex items-center gap-1">
+              <i class="fa-solid fa-list-check text-[#2fe0d0]"></i><span>+ Tugas</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- SUB-TAB: HARI INI | KALENDER | TUGAS -->
+        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-2xl banner-glass-card">
+          <button type="button" onclick="switchScheduleSubTab('hari_ini')" id="sched-subtab-hari_ini" class="py-2 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 bg-[#0b1d3a] text-[#2fe0d0] shadow-sm">
+            <i class="fa-solid fa-sun text-[11px]"></i><span>Hari Ini</span>
+          </button>
+          <button type="button" onclick="switchScheduleSubTab('kalender')" id="sched-subtab-kalender" class="py-2 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 text-[#526582] hover:text-[#0b1d3a]">
+            <i class="fa-solid fa-calendar-days text-[11px]"></i><span>Kalender</span>
+          </button>
+          <button type="button" onclick="switchScheduleSubTab('tugas')" id="sched-subtab-tugas" class="py-2 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 text-[#526582] hover:text-[#0b1d3a]">
+            <i class="fa-solid fa-list-check text-[11px]"></i><span>Tugas</span>
+          </button>
+        </div>
+
+        <!-- SUB-TAB 1: HARI INI -->
+        <div id="sched-view-hari-ini" class="space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="text-xs font-black uppercase tracking-wider text-[#0b1d3a] flex items-center gap-1.5">
+                <i class="fa-solid fa-clock text-[#5b7cf0]"></i> Jadwal Hari Ini
+              </h2>
+              <div class="flex items-center gap-1.5">
+                <div class="inline-flex p-0.5 rounded-lg bg-[#eef4ff] border border-[#5b7cf0]/15">
+                  <button type="button" onclick="setScheduleTodayViewMode('grid')" id="sched-today-mode-grid" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition">Grid</button>
+                  <button type="button" onclick="setScheduleTodayViewMode('list')" id="sched-today-mode-list" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold text-[#526582] transition">Daftar</button>
+                </div>
+                <button type="button" onclick="openScheduleEventModal({ date: todayISO })" class="text-[11px] font-extrabold text-[#5b7cf0] hover:underline">+ Jadwal</button>
+              </div>
+            </div>
+            <div id="sched-today-events-list" class="space-y-2.5"></div>
+          </div>
+
+          <div id="sched-overdue-tasks-wrap" class="space-y-2 hidden">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-black uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation"></i> Tugas Terlambat
+              </h2>
+              <span id="sched-overdue-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">0</span>
+            </div>
+            <div id="sched-overdue-tasks-list" class="space-y-2"></div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-black uppercase tracking-wider text-[#0b1d3a] flex items-center gap-1.5">
+                <i class="fa-solid fa-flag-checkered text-teal-600"></i> Tugas Jatuh Tempo Hari Ini
+              </h2>
+              <button type="button" onclick="openScheduleTaskModal({ deadlineDate: todayISO })" class="text-[11px] font-extrabold text-[#5b7cf0] hover:underline">+ Buat Tugas</button>
+            </div>
+            <div id="sched-due-today-tasks-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 2: KALENDER (MINGGUAN & BULANAN) -->
+        <div id="sched-view-kalender" class="hidden space-y-3">
+          <div class="banner-glass-card rounded-2xl p-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="inline-flex p-0.5 rounded-xl bg-[#eef4ff] border border-[#5b7cf0]/15">
+                <button type="button" onclick="setScheduleCalendarMode('week')" id="sched-cal-mode-week" class="px-3 py-1 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition">Mingguan</button>
+                <button type="button" onclick="setScheduleCalendarMode('month')" id="sched-cal-mode-month" class="px-3 py-1 rounded-lg text-[11px] font-extrabold text-[#526582] transition">Bulanan</button>
+              </div>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="navigateScheduleCalendar(-1)" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-[#0b1d3a] hover:bg-slate-50 flex items-center justify-center text-xs active:scale-95 transition" title="Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+                <button type="button" onclick="jumpScheduleCalendarToday()" class="px-2.5 h-7 rounded-lg bg-white border border-slate-200 text-[10px] font-extrabold text-[#0b1d3a] hover:bg-slate-50 active:scale-95 transition">Hari Ini</button>
+                <button type="button" onclick="navigateScheduleCalendar(1)" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-[#0b1d3a] hover:bg-slate-50 flex items-center justify-center text-xs active:scale-95 transition" title="Berikutnya"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <h3 id="sched-cal-period-label" class="text-sm font-extrabold text-[#0b1d3a]">-</h3>
+              <button type="button" onclick="openScheduleEventModal({ date: scheduleSelectedDate })" class="px-2.5 py-1 rounded-lg bg-[#0b1d3a] text-[#2fe0d0] text-[10px] font-extrabold active:scale-95 transition">+ Tambah</button>
+            </div>
+
+            <!-- Filter Kategori Berwarna -->
+            <div id="sched-cal-category-legend" class="flex items-center gap-1.5 overflow-x-auto pb-0.5"></div>
+          </div>
+
+          <div id="sched-calendar-grid-container" class="space-y-3"></div>
+          <div id="sched-calendar-agenda-container" class="space-y-2.5"></div>
+        </div>
+
+        <!-- SUB-TAB 3: TUGAS -->
+        <div id="sched-view-tugas" class="hidden space-y-3">
+          <div class="banner-glass-card rounded-2xl p-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="inline-flex p-0.5 rounded-xl bg-[#eef4ff] border border-[#5b7cf0]/15">
+                <button type="button" onclick="setScheduleTaskFilter('aktif')" id="sched-task-filter-aktif" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition">Aktif <span id="sched-task-count-aktif" class="ml-0.5 opacity-80">(0)</span></button>
+                <button type="button" onclick="setScheduleTaskFilter('selesai')" id="sched-task-filter-selesai" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold text-[#526582] transition">Selesai <span id="sched-task-count-selesai" class="ml-0.5 opacity-80">(0)</span></button>
+              </div>
+              <button type="button" onclick="openScheduleTaskModal()" class="px-3 py-1.5 rounded-xl bg-[#0b1d3a] hover:bg-[#142c54] text-[#2fe0d0] text-[11px] font-extrabold flex items-center gap-1 shadow active:scale-95 transition">
+                <i class="fa-solid fa-plus"></i><span>Buat Tugas</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <select id="sched-task-cat-filter" onchange="renderScheduleTasks()" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-[11px] font-bold text-[#0b1d3a]">
+                <option value="semua">Semua Kategori</option>
+              </select>
+              <select id="sched-task-prio-filter" onchange="renderScheduleTasks()" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-[11px] font-bold text-[#0b1d3a]">
+                <option value="semua">Semua Prioritas</option>
+                <option value="Tinggi">Prioritas Tinggi</option>
+                <option value="Sedang">Prioritas Sedang</option>
+                <option value="Rendah">Prioritas Rendah</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="sched-tasks-list-container" class="space-y-2.5"></div>
+        </div>
+      </section>
+
     </main>
 
     <!-- BOTTOM NAVIGATION PILL BAR -->
-    <nav class="bottom-nav-bar max-w-md mx-auto px-2 py-1.5 sm:px-3 sm:py-2 flex items-center justify-between text-[10px] sm:text-[11px] font-bold no-print rounded-full">
-      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center justify-center gap-0.5 text-[#0b1d3a] font-extrabold py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-wallet text-[15px] sm:text-base leading-none"></i><span class="truncate">Kas</span></button>
-      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-bag-shopping text-[15px] sm:text-base leading-none"></i><span class="truncate">Jastip</span></button>
-      <div class="flex flex-col items-center justify-center shrink-0 px-1"><button onclick="triggerQuickAction()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-lg flex items-center justify-center text-sm sm:text-base transition ring-2 ring-[#2fe0d0]/40" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
-      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-table-list text-[15px] sm:text-base leading-none"></i><span class="truncate">Belanja</span></button>
-      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-[15px] sm:text-base leading-none"></i><span class="truncate">Riwayat</span></button>
+    <nav class="bottom-nav-bar max-w-md mx-auto px-1.5 py-1.5 sm:px-3 sm:py-2 flex items-center justify-between text-[9.5px] sm:text-[11px] font-bold no-print rounded-full">
+      <button onclick="switchAppTab('tab-kas')" id="nav-btn-kas" class="flex flex-col items-center justify-center gap-0.5 text-[#0b1d3a] font-extrabold py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-wallet text-[14px] sm:text-base leading-none"></i><span class="truncate">Kas</span></button>
+      <button onclick="switchAppTab('tab-jastip')" id="nav-btn-jastip" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-bag-shopping text-[14px] sm:text-base leading-none"></i><span class="truncate">Jastip</span></button>
+      <button onclick="switchAppTab('tab-rekap')" id="nav-btn-rekap" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-table-list text-[14px] sm:text-base leading-none"></i><span class="truncate">Belanja</span></button>
+      <div class="flex flex-col items-center justify-center shrink-0 px-0.5 sm:px-1"><button onclick="triggerQuickAction()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#0b1d3a] hover:bg-[#142c54] active:scale-90 text-[#2fe0d0] shadow-lg flex items-center justify-center text-sm sm:text-base transition ring-2 ring-[#2fe0d0]/40" title="Tambah Cepat"><i class="fa-solid fa-plus font-bold"></i></button></div>
+      <button onclick="switchAppTab('tab-schedule')" id="nav-btn-schedule" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-calendar-check text-[14px] sm:text-base leading-none"></i><span class="truncate">Jadwal</span></button>
+      <button onclick="switchAppTab('tab-riwayat')" id="nav-btn-riwayat" class="flex flex-col items-center justify-center gap-0.5 text-[#526582] py-0.5 min-w-0 flex-1 transition"><i class="fa-solid fa-clock-rotate-left text-[14px] sm:text-base leading-none"></i><span class="truncate">Riwayat</span></button>
     </nav>
   </div>
 
@@ -1676,6 +1839,218 @@
     </div>
   </div>
 
+  <!-- ================= MODALS SCHEDULE MAKER ================= -->
+  <div id="modal-schedule-event" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 hidden no-print">
+    <div class="banner-glass-card rounded-3xl p-5 max-w-sm w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-[#0b1d3a]/10 pb-2">
+        <h3 class="text-sm font-extrabold text-[#0b1d3a] flex items-center gap-2" id="sched-event-modal-title"><i class="fa-solid fa-calendar-plus text-[#5b7cf0]"></i> Tambah Jadwal</h3>
+        <button type="button" onclick="toggleModal('modal-schedule-event', false)" class="text-[#526582] hover:text-[#0b1d3a]">✕</button>
+      </div>
+      <form id="schedule-event-form" class="space-y-3">
+        <input type="hidden" id="se_id" value="">
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Judul Jadwal</label>
+          <input type="text" id="se_judul" required placeholder="Contoh: Bimbingan TA, Kelas Basis Data, Standup Magang" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Tanggal</label>
+          <input type="date" id="se_date" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Mulai</label>
+            <input type="time" id="se_start_time" required value="09:00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Selesai</label>
+            <input type="time" id="se_end_time" required value="10:00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Kategori</label>
+          <select id="se_kategori" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]"></select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Lokasi atau Link</label>
+          <input type="text" id="se_lokasi" placeholder="Ruang B204 / https://meet.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-[#0b1d3a]">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Hubungkan ke Tugas (Opsional)</label>
+          <select id="se_tugas_id" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+            <option value="">— Tidak terhubung tugas —</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Catatan</label>
+          <textarea id="se_catatan" rows="2" placeholder="Catatan tambahan..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-[#0b1d3a]"></textarea>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" id="btn-delete-sched-event" onclick="deleteScheduleEventFromModal()" class="hidden px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-extrabold border border-rose-200">Hapus</button>
+          <button type="submit" id="btn-submit-sched-event" class="flex-1 py-2.5 bg-[#0b1d3a] hover:bg-[#142c54] text-white rounded-xl text-xs font-extrabold shadow">Simpan Jadwal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-schedule-move" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 hidden no-print">
+    <div class="banner-glass-card rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-[#0b1d3a]/10 pb-2">
+        <h3 class="text-sm font-extrabold text-[#0b1d3a] flex items-center gap-2"><i class="fa-solid fa-arrows-up-down-left-right text-[#5b7cf0]"></i> Pindahkan Jadwal</h3>
+        <button type="button" onclick="toggleModal('modal-schedule-move', false)" class="text-[#526582] hover:text-[#0b1d3a]">✕</button>
+      </div>
+      <form id="schedule-move-form" class="space-y-3">
+        <input type="hidden" id="sm_id" value="">
+        <input type="hidden" id="sm_duration_mins" value="60">
+        <div class="p-3 rounded-2xl bg-[#f2f7fc] border border-slate-200">
+          <p id="sm_title_preview" class="text-xs font-extrabold text-[#0b1d3a] truncate">-</p>
+          <p id="sm_current_preview" class="text-[11px] text-[#526582] mt-0.5">-</p>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="shiftMoveDateDays(1)" class="flex-1 py-1.5 rounded-xl bg-[#eef4ff] text-[#5b7cf0] text-[11px] font-extrabold hover:bg-[#e1ecff] transition">+1 Hari</button>
+          <button type="button" onclick="shiftMoveDateDays(2)" class="flex-1 py-1.5 rounded-xl bg-[#eef4ff] text-[#5b7cf0] text-[11px] font-extrabold hover:bg-[#e1ecff] transition">+2 Hari</button>
+          <button type="button" onclick="shiftMoveDateDays(7)" class="flex-1 py-1.5 rounded-xl bg-[#eef4ff] text-[#5b7cf0] text-[11px] font-extrabold hover:bg-[#e1ecff] transition">+1 Minggu</button>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Tanggal Baru</label>
+          <input type="date" id="sm_date" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Mulai Baru</label>
+            <input type="time" id="sm_start_time" required onchange="autoAdjustMoveEndTime()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam Selesai Baru</label>
+            <input type="time" id="sm_end_time" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-[#0b1d3a] hover:bg-[#142c54] text-white rounded-xl text-xs font-extrabold shadow">Pindahkan &amp; Sinkronkan</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-schedule-task" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 hidden no-print">
+    <div class="banner-glass-card rounded-3xl p-5 max-w-sm w-full max-h-[92vh] overflow-y-auto shadow-2xl space-y-3">
+      <div class="flex items-center justify-between border-b border-[#0b1d3a]/10 pb-2">
+        <h3 class="text-sm font-extrabold text-[#0b1d3a] flex items-center gap-2" id="sched-task-modal-title"><i class="fa-solid fa-list-check text-teal-600"></i> Buat Tugas</h3>
+        <button type="button" onclick="toggleModal('modal-schedule-task', false)" class="text-[#526582] hover:text-[#0b1d3a]">✕</button>
+      </div>
+      <form id="schedule-task-form" class="space-y-3">
+        <input type="hidden" id="st_id" value="">
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Judul Tugas</label>
+          <input type="text" id="st_judul" required placeholder="Contoh: Revisi Bab 3 TA, Laporan Magang Mingguan" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Tanggal Deadline</label>
+            <input type="date" id="st_deadline_date" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Jam (Opsional)</label>
+            <input type="time" id="st_deadline_time" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Prioritas</label>
+            <select id="st_prioritas" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+              <option value="Tinggi">Tinggi</option>
+              <option value="Sedang" selected>Sedang</option>
+              <option value="Rendah">Rendah</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Status</label>
+            <select id="st_status" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+              <option value="Aktif">Aktif</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Kategori</label>
+          <select id="st_kategori" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]"></select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-[#526582] uppercase mb-1">Catatan</label>
+          <textarea id="st_catatan" rows="2" placeholder="Detail pekerjaan, link dokumen, atau target..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-[#0b1d3a]"></textarea>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" id="btn-delete-sched-task" onclick="deleteScheduleTaskFromModal()" class="hidden px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-extrabold border border-rose-200">Hapus</button>
+          <button type="submit" id="btn-submit-sched-task" class="flex-1 py-2.5 bg-[#0b1d3a] hover:bg-[#142c54] text-white rounded-xl text-xs font-extrabold shadow">Simpan Tugas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-schedule-categories" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+    <div class="banner-glass-card rounded-3xl p-5 max-w-sm w-full max-h-[88vh] overflow-y-auto shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-[#0b1d3a]/10 pb-2">
+        <h3 class="text-sm font-extrabold text-[#0b1d3a] flex items-center gap-2"><i class="fa-solid fa-palette text-[#5b7cf0]"></i> Kategori Schedule</h3>
+        <button type="button" onclick="toggleModal('modal-schedule-categories', false)" class="text-[#526582] hover:text-[#0b1d3a]">✕</button>
+      </div>
+      <form id="schedule-category-form" class="space-y-2.5">
+        <input type="hidden" id="sc_edit_id" value="">
+        <label class="block text-[10px] font-bold text-[#526582] uppercase">Tambah / Edit Kategori</label>
+        <div class="flex items-center gap-2">
+          <input type="color" id="sc_warna" value="#5b7cf0" class="w-10 h-9 p-0.5 bg-white border border-slate-200 rounded-xl cursor-pointer shrink-0">
+          <input type="text" id="sc_nama" required placeholder="Contoh: TA, Kuliah, Magang" class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#0b1d3a]">
+          <button type="submit" class="px-3 py-2 bg-[#0b1d3a] hover:bg-[#142c54] text-white rounded-xl text-xs font-extrabold shadow shrink-0">Simpan</button>
+        </div>
+        <div class="flex items-center gap-1.5 pt-0.5">
+          <span class="text-[10px] text-[#526582] font-bold">Warna cepat:</span>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#5b7cf0'" class="w-5 h-5 rounded-full bg-[#5b7cf0] border border-white shadow-sm"></button>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#0ea5e9'" class="w-5 h-5 rounded-full bg-[#0ea5e9] border border-white shadow-sm"></button>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#10b981'" class="w-5 h-5 rounded-full bg-[#10b981] border border-white shadow-sm"></button>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#f59e0b'" class="w-5 h-5 rounded-full bg-[#f59e0b] border border-white shadow-sm"></button>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#ec4899'" class="w-5 h-5 rounded-full bg-[#ec4899] border border-white shadow-sm"></button>
+          <button type="button" onclick="document.getElementById('sc_warna').value='#8b5cf6'" class="w-5 h-5 rounded-full bg-[#8b5cf6] border border-white shadow-sm"></button>
+        </div>
+      </form>
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-[#526582] uppercase">Daftar Kategori (Sinkron ke Agenda_Kategori)</label>
+        <div id="schedule-categories-list" class="space-y-1.5 max-h-56 overflow-y-auto pr-0.5"></div>
+      </div>
+      <button type="button" onclick="toggleModal('modal-schedule-categories', false)" class="w-full py-2.5 bg-slate-100 text-[#0b1d3a] rounded-xl text-xs font-bold">Selesai</button>
+    </div>
+  </div>
+
+  <!-- MODAL: DETAIL CEPAT BLOK JADWAL (COURSICLE POPOVER) -->
+  <div id="modal-schedule-event-detail" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 hidden no-print" onclick="if (event.target === this) toggleModal('modal-schedule-event-detail', false)">
+    <div class="banner-glass-card rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-3.5">
+      <div class="flex items-start justify-between gap-2 pb-2.5 border-b border-[#0b1d3a]/10">
+        <div class="min-w-0 space-y-1">
+          <span id="sed_cat_badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold">Kategori</span>
+          <h3 id="sed_title" class="text-sm font-extrabold text-[#0b1d3a] leading-snug break-words">-</h3>
+        </div>
+        <button type="button" onclick="toggleModal('modal-schedule-event-detail', false)" class="text-[#526582] hover:text-[#0b1d3a] text-sm">✕</button>
+      </div>
+      <div class="space-y-2 text-xs text-[#0b1d3a]">
+        <div class="flex items-center gap-2 font-bold">
+          <i class="fa-regular fa-clock text-[#5b7cf0] w-4 text-center"></i>
+          <span id="sed_time">-</span>
+        </div>
+        <div id="sed_loc_row" class="hidden flex items-center gap-2">
+          <i id="sed_loc_icon" class="fa-solid fa-location-dot text-teal-600 w-4 text-center"></i>
+          <div id="sed_loc_val" class="min-w-0 flex-1 truncate font-semibold"></div>
+        </div>
+        <div id="sed_task_row" class="hidden flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-teal-600 w-4 text-center"></i>
+          <span id="sed_task_val" class="font-bold text-teal-800 truncate"></span>
+        </div>
+        <div id="sed_note_row" class="hidden p-2.5 rounded-xl bg-[#f2f7fc] border border-slate-200 text-[11px] text-[#526582] leading-relaxed">
+          <span id="sed_note_val"></span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <button type="button" id="sed_btn_move" class="py-2 rounded-xl bg-[#eef4ff] hover:bg-[#e1ecff] text-[#5b7cf0] text-xs font-extrabold flex items-center justify-center gap-1 active:scale-95 transition"><i class="fa-solid fa-arrows-up-down-left-right text-[10px]"></i><span>Pindah</span></button>
+        <button type="button" id="sed_btn_edit" class="py-2 rounded-xl bg-[#0b1d3a] hover:bg-[#142c54] text-[#2fe0d0] text-xs font-extrabold flex items-center justify-center gap-1 active:scale-95 transition"><i class="fa-solid fa-pen text-[10px]"></i><span>Edit</span></button>
+        <button type="button" id="sed_btn_delete" class="py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold flex items-center justify-center gap-1 active:scale-95 transition"><i class="fa-solid fa-trash text-[10px]"></i><span>Hapus</span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: PREVIEW BUKTI PEMBAYARAN -->
   <div id="modal-proof-viewer" class="modal-overlay fixed inset-0 bg-[#0b1d3a]/75 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden no-print" onclick="if (event.target === this) toggleModal('modal-proof-viewer', false)">
     <div class="banner-glass-card rounded-3xl p-4 max-w-md w-full space-y-3 shadow-2xl">
@@ -2147,6 +2522,30 @@
     let deletedKasIds = JSON.parse(localStorage.getItem('fm_deleted_kas_v1')) || [];
     let pendingJastipSync = JSON.parse(localStorage.getItem('fm_pending_jastip_v1')) || [];
     let pendingRekapSync = JSON.parse(localStorage.getItem('fm_pending_rekap_v1')) || [];
+
+    const DEFAULT_AGENDA_KATEGORI = [
+      { ID_Kategori: 'KAT-TA', Nama_Kategori: 'TA', Warna: '#5b7cf0' },
+      { ID_Kategori: 'KAT-KULIAH', Nama_Kategori: 'Kuliah', Warna: '#0ea5e9' },
+      { ID_Kategori: 'KAT-MAGANG', Nama_Kategori: 'Magang', Warna: '#10b981' },
+      { ID_Kategori: 'KAT-PRIBADI', Nama_Kategori: 'Pribadi', Warna: '#f59e0b' }
+    ];
+    let agendaJadwal = [];
+    let agendaTugas = [];
+    let agendaKategori = [...DEFAULT_AGENDA_KATEGORI];
+    let pendingAgendaJadwalSync = JSON.parse(localStorage.getItem('fm_pending_agenda_jadwal_v1')) || [];
+    let deletedAgendaJadwalIds = JSON.parse(localStorage.getItem('fm_deleted_agenda_jadwal_v1')) || [];
+    let pendingAgendaTugasSync = JSON.parse(localStorage.getItem('fm_pending_agenda_tugas_v1')) || [];
+    let deletedAgendaTugasIds = JSON.parse(localStorage.getItem('fm_deleted_agenda_tugas_v1')) || [];
+    let pendingAgendaKategoriSync = JSON.parse(localStorage.getItem('fm_pending_agenda_kategori_v1')) || [];
+    let deletedAgendaKategoriIds = JSON.parse(localStorage.getItem('fm_deleted_agenda_kategori_v1')) || [];
+    let agendaDefaultsSeeded = false;
+
+    let scheduleSubTab = 'hari_ini';
+    let scheduleCalendarMode = 'week';
+    let scheduleCalendarCategoryFilter = 'semua';
+    let scheduleTaskFilter = 'aktif';
+    let scheduleWeekFilterBySelectedDay = false;
+
     let lastSpsKasSheetName = '';
     let spsKasEmptyNotified = false;
     let lastSpsError = '';
@@ -2157,6 +2556,8 @@
     const nowLocal = new Date();
     const todayISO = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth() + 1).padStart(2, '0')}-${String(nowLocal.getDate()).padStart(2, '0')}`;
     const thisMonthISO = todayISO.slice(0, 7);
+    let scheduleSelectedDate = todayISO;
+    let scheduleCalendarAnchorDate = todayISO;
 
     // ================= TOAST, KONFIRMASI & HELPER AMAN =================
     let toastTimer = null;
@@ -2217,6 +2618,7 @@
       'tab-kas': 'Kas & Dompet',
       'tab-jastip': 'Kelola Jastip',
       'tab-rekap': 'Rekap Belanja',
+      'tab-schedule': 'Schedule Maker',
       'tab-riwayat': 'Riwayat Transaksi'
     };
 
@@ -2267,6 +2669,12 @@
       localStorage.setItem('fm_deleted_kas_v1', JSON.stringify(deletedKasIds));
       localStorage.setItem('fm_pending_jastip_v1', JSON.stringify(pendingJastipSync));
       localStorage.setItem('fm_pending_rekap_v1', JSON.stringify(pendingRekapSync));
+      localStorage.setItem('fm_pending_agenda_jadwal_v1', JSON.stringify(pendingAgendaJadwalSync));
+      localStorage.setItem('fm_deleted_agenda_jadwal_v1', JSON.stringify(deletedAgendaJadwalIds));
+      localStorage.setItem('fm_pending_agenda_tugas_v1', JSON.stringify(pendingAgendaTugasSync));
+      localStorage.setItem('fm_deleted_agenda_tugas_v1', JSON.stringify(deletedAgendaTugasIds));
+      localStorage.setItem('fm_pending_agenda_kategori_v1', JSON.stringify(pendingAgendaKategoriSync));
+      localStorage.setItem('fm_deleted_agenda_kategori_v1', JSON.stringify(deletedAgendaKategoriIds));
     }
     function enqueuePendingKas(entry) {
       if (!entry || entry.id == null) return;
@@ -2381,7 +2789,10 @@
     let isFlushingPending = false;
     async function flushPendingSyncQueues() {
       if (isFlushingPending) return;
-      if (!pendingKasSync.length && !pendingJastipSync.length && !pendingRekapSync.length) return;
+      const hasAny = pendingKasSync.length || pendingJastipSync.length || pendingRekapSync.length ||
+        pendingAgendaJadwalSync.length || pendingAgendaTugasSync.length || pendingAgendaKategoriSync.length ||
+        deletedAgendaJadwalIds.length || deletedAgendaTugasIds.length || deletedAgendaKategoriIds.length;
+      if (!hasAny) return;
       isFlushingPending = true;
       try {
         for (const p of [...pendingKasSync].reverse()) {
@@ -2397,6 +2808,31 @@
           const sheet = p.sheetName || activeSheetName;
           if (sheet) await postDataRealTime(SPS_2_URL, { action: 'addRekap', sheetName: sheet, data: p.entry });
         }
+        for (const p of [...pendingAgendaKategoriSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: p.entry });
+        }
+        for (const p of [...pendingAgendaTugasSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: p.entry });
+        }
+        for (const p of [...pendingAgendaJadwalSync].reverse()) {
+          if (Date.now() - (p.ts || 0) < 3500) continue;
+          await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: p.entry });
+        }
+        for (const id of [...deletedAgendaJadwalIds]) {
+          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id });
+          if (ok) deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(id));
+        }
+        for (const id of [...deletedAgendaTugasIds]) {
+          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaTugas', id });
+          if (ok) deletedAgendaTugasIds = deletedAgendaTugasIds.filter((x) => String(x) !== String(id));
+        }
+        for (const id of [...deletedAgendaKategoriIds]) {
+          const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaKategori', id });
+          if (ok) deletedAgendaKategoriIds = deletedAgendaKategoriIds.filter((x) => String(x) !== String(id));
+        }
+        savePendingSyncState();
       } finally {
         isFlushingPending = false;
       }
@@ -2457,12 +2893,17 @@
             syncCustomersFromOrders();
           }
 
+          if (typeof mergeAgendaFromSps1 === 'function') {
+            mergeAgendaFromSps1(json);
+          }
+
           saveLocalBackup();
           updateKasDashboard();
           if (typeof updateJastipModule === 'function') updateJastipModule();
           if (typeof updateRiwayatModule === 'function') updateRiwayatModule();
+          if (typeof updateScheduleModule === 'function') updateScheduleModule();
           updateStatusUI('online');
-          if (isManual) showToast('Data Kas & Jastip tersinkron!');
+          if (isManual) showToast('Data Kas, Jastip & Schedule tersinkron!');
           return true;
         }
         throw new Error(json.message || 'Respon SPS 1 tidak valid');
@@ -2578,7 +3019,7 @@
       const labelEl = document.getElementById('current-menu-label');
       if (labelEl && TAB_LABELS[tabId]) labelEl.innerText = TAB_LABELS[tabId];
 
-      ['tab-kas', 'tab-jastip', 'tab-rekap', 'tab-riwayat'].forEach((t) => {
+      ['tab-kas', 'tab-jastip', 'tab-rekap', 'tab-schedule', 'tab-riwayat'].forEach((t) => {
         const sec = document.getElementById(t.replace('tab-', 'module-'));
         const btn = document.getElementById(`nav-btn-${t.replace('tab-', '')}`);
         const ddItem = document.getElementById(`item-${t}`);
@@ -2602,9 +3043,22 @@
         if (chk) chk.classList.remove('hidden');
       }
 
+      const dashMain = document.getElementById('fm-dash-main');
+      const dashHdr = document.getElementById('fm-dash-header-inner');
+      const isScheduleWide = tabId === 'tab-schedule';
+      if (dashMain) {
+        dashMain.classList.toggle('max-w-lg', !isScheduleWide);
+        dashMain.classList.toggle('max-w-5xl', isScheduleWide);
+      }
+      if (dashHdr) {
+        dashHdr.classList.toggle('max-w-lg', !isScheduleWide);
+        dashHdr.classList.toggle('max-w-5xl', isScheduleWide);
+      }
+
       if (tabId === 'tab-kas') updateKasDashboard();
       if (tabId === 'tab-jastip' && typeof updateJastipModule === 'function') updateJastipModule();
       if (tabId === 'tab-rekap') { if (typeof renderRekapTable === 'function') renderRekapTable(); fetchFromRekapSps(false); }
+      if (tabId === 'tab-schedule' && typeof updateScheduleModule === 'function') updateScheduleModule();
       if (tabId === 'tab-riwayat' && typeof updateRiwayatModule === 'function') updateRiwayatModule();
       if (typeof window.fmUpdateDashBowl === 'function') window.fmUpdateDashBowl();
     }
@@ -2612,6 +3066,10 @@
     function triggerQuickAction() {
       if (currentAppTab === 'tab-jastip' && typeof openNewJastipOrderModal === 'function') openNewJastipOrderModal();
       else if (currentAppTab === 'tab-rekap' && typeof openRekapModalForAdd === 'function') openRekapModalForAdd();
+      else if (currentAppTab === 'tab-schedule') {
+        if (scheduleSubTab === 'tugas' && typeof openScheduleTaskModal === 'function') openScheduleTaskModal();
+        else if (typeof openScheduleEventModal === 'function') openScheduleEventModal({ date: scheduleSubTab === 'kalender' ? scheduleSelectedDate : todayISO });
+      }
       else openKasModal();
     }
 
@@ -4647,12 +5105,1351 @@ Terima kasih banyak! 🙏`;
       localStorage.setItem('fm_kas_cache', JSON.stringify(kasTransactions));
       localStorage.setItem('fm_jastip_cache', JSON.stringify(jastipOrders));
       localStorage.setItem('fm_rekap_cache', JSON.stringify(rekapBelanjaList));
+      localStorage.setItem('fm_agenda_jadwal_v1', JSON.stringify(agendaJadwal));
+      localStorage.setItem('fm_agenda_tugas_v1', JSON.stringify(agendaTugas));
+      localStorage.setItem('fm_agenda_kategori_v1', JSON.stringify(agendaKategori));
     }
     function loadLocalBackup() {
       const k = localStorage.getItem('fm_kas_cache'), j = localStorage.getItem('fm_jastip_cache'), r = localStorage.getItem('fm_rekap_cache');
       if (k) kasTransactions = JSON.parse(k).map((raw) => mergeKasWithMeta(raw));
       if (j) { jastipOrders = JSON.parse(j).map((raw) => mergeJastipWithMeta(raw)); syncCustomersFromOrders(); }
       if (r) rekapBelanjaList = JSON.parse(r);
+      try {
+        const aj = localStorage.getItem('fm_agenda_jadwal_v1');
+        const at = localStorage.getItem('fm_agenda_tugas_v1');
+        const ak = localStorage.getItem('fm_agenda_kategori_v1');
+        if (ak) {
+          const parsedK = JSON.parse(ak);
+          if (Array.isArray(parsedK) && parsedK.length) agendaKategori = parsedK.map(normalizeAgendaKategori);
+        }
+        if (at) agendaTugas = JSON.parse(at).map(normalizeAgendaTugas);
+        if (aj) agendaJadwal = JSON.parse(aj).map(normalizeAgendaJadwal);
+      } catch (e) { console.warn('Gagal muat cache Schedule Maker:', e); }
+    }
+
+    // ================= MODUL 5: SCHEDULE MAKER (SINKRON SPS 1) =================
+    function pad2(n) { return String(n).padStart(2, '0'); }
+    function formatLocalDateISO(dt) {
+      return `${dt.getFullYear()}-${pad2(dt.getMonth() + 1)}-${pad2(dt.getDate())}`;
+    }
+    function formatLocalDateTimeStr(dt) {
+      return `${formatLocalDateISO(dt)} ${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
+    }
+    function parseISODateLocal(iso) {
+      const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return new Date();
+      return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0, 0, 0);
+    }
+    function normalizeAgendaDateTime(val, allowDateOnly = false) {
+      if (val == null || val === '') return '';
+      const s = String(val).trim();
+      if (!s) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const mSpace = s.match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2})/);
+      if (mSpace && !s.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(s)) {
+        return `${mSpace[1]} ${mSpace[2]}`;
+      }
+      const parsed = new Date(s);
+      if (!isNaN(parsed.getTime())) {
+        if (allowDateOnly && parsed.getHours() === 0 && parsed.getMinutes() === 0 && !s.includes(':')) {
+          return formatLocalDateISO(parsed);
+        }
+        return formatLocalDateTimeStr(parsed);
+      }
+      return s;
+    }
+    function splitDateTimeParts(dtStr) {
+      const norm = normalizeAgendaDateTime(dtStr, true);
+      const m = norm.match(/^(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}))?/);
+      if (!m) return { date: '', time: '' };
+      return { date: m[1], time: m[2] || '' };
+    }
+    function timeStrToMins(hm) {
+      const m = String(hm || '').match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return 0;
+      return Number(m[1]) * 60 + Number(m[2]);
+    }
+    function minsToTimeStr(mins) {
+      const clamped = Math.max(0, Math.min(23 * 60 + 59, Math.round(mins)));
+      return `${pad2(Math.floor(clamped / 60))}:${pad2(clamped % 60)}`;
+    }
+    function formatDurationLabel(startHm, endHm) {
+      const diff = timeStrToMins(endHm) - timeStrToMins(startHm);
+      if (diff <= 0) return '';
+      const h = Math.floor(diff / 60);
+      const m = diff % 60;
+      if (h > 0 && m > 0) return `${h}j ${m}m`;
+      if (h > 0) return `${h}j`;
+      return `${m}m`;
+    }
+    function formatShortIdDate(iso) {
+      if (!iso) return '-';
+      const dt = parseISODateLocal(iso);
+      return dt.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    }
+    function formatFullIdDate(iso) {
+      if (!iso) return '-';
+      const dt = parseISODateLocal(iso);
+      return dt.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function normalizeAgendaKategori(raw) {
+      const r = raw || {};
+      return {
+        ID_Kategori: String(r.ID_Kategori || r.id_kategori || r.id || `KAT-${Date.now()}`).trim(),
+        Nama_Kategori: String(r.Nama_Kategori || r.nama_kategori || r.nama || 'Umum').trim(),
+        Warna: String(r.Warna || r.warna || '#5b7cf0').trim()
+      };
+    }
+    function normalizeAgendaTugas(raw) {
+      const r = raw || {};
+      const rawStatus = String(r.Status || r.status || 'Aktif').trim();
+      const status = /^selesai$/i.test(rawStatus) ? 'Selesai' : 'Aktif';
+      const rawPrio = String(r.Prioritas || r.prioritas || 'Sedang').trim();
+      const prio = /^tinggi$/i.test(rawPrio) ? 'Tinggi' : (/^rendah$/i.test(rawPrio) ? 'Rendah' : 'Sedang');
+      return {
+        ID_Tugas: String(r.ID_Tugas || r.id_tugas || r.id || `TGS-${Date.now()}`).trim(),
+        Judul: String(r.Judul || r.judul || '').trim(),
+        Deadline: normalizeAgendaDateTime(r.Deadline || r.deadline || '', true),
+        Prioritas: prio,
+        Status: status,
+        ID_Kategori: String(r.ID_Kategori || r.id_kategori || (agendaKategori[0]?.ID_Kategori || 'KAT-PRIBADI')).trim(),
+        Catatan: String(r.Catatan || r.catatan || '').trim(),
+        Waktu_Selesai: normalizeAgendaDateTime(r.Waktu_Selesai || r.waktu_selesai || '', false)
+      };
+    }
+    function normalizeAgendaJadwal(raw) {
+      const r = raw || {};
+      return {
+        ID_Jadwal: String(r.ID_Jadwal || r.id_jadwal || r.id || `JDW-${Date.now()}`).trim(),
+        Judul: String(r.Judul || r.judul || '').trim(),
+        Mulai: normalizeAgendaDateTime(r.Mulai || r.mulai || '', false),
+        Selesai: normalizeAgendaDateTime(r.Selesai || r.selesai || '', false),
+        ID_Kategori: String(r.ID_Kategori || r.id_kategori || (agendaKategori[0]?.ID_Kategori || 'KAT-PRIBADI')).trim(),
+        Lokasi_atau_Link: String(r.Lokasi_atau_Link || r.lokasi_atau_link || r.lokasi || '').trim(),
+        Catatan: String(r.Catatan || r.catatan || '').trim(),
+        ID_Tugas: String(r.ID_Tugas || r.id_tugas || '').trim()
+      };
+    }
+
+    function enqueuePendingAgenda(kind, entry) {
+      if (!entry) return;
+      if (kind === 'jadwal') {
+        const sid = String(entry.ID_Jadwal);
+        deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== sid);
+        pendingAgendaJadwalSync = [{ id: sid, entry, ts: Date.now() }, ...pendingAgendaJadwalSync.filter((p) => String(p.id) !== sid)].slice(0, 100);
+      } else if (kind === 'tugas') {
+        const sid = String(entry.ID_Tugas);
+        deletedAgendaTugasIds = deletedAgendaTugasIds.filter((x) => String(x) !== sid);
+        pendingAgendaTugasSync = [{ id: sid, entry, ts: Date.now() }, ...pendingAgendaTugasSync.filter((p) => String(p.id) !== sid)].slice(0, 100);
+      } else if (kind === 'kategori') {
+        const sid = String(entry.ID_Kategori);
+        deletedAgendaKategoriIds = deletedAgendaKategoriIds.filter((x) => String(x) !== sid);
+        pendingAgendaKategoriSync = [{ id: sid, entry, ts: Date.now() }, ...pendingAgendaKategoriSync.filter((p) => String(p.id) !== sid)].slice(0, 50);
+      }
+      savePendingSyncState();
+    }
+
+    function mergeAgendaFromSps1(json) {
+      if (!json) return;
+      if (Array.isArray(json.agendaKategori)) {
+        const delSet = new Set(deletedAgendaKategoriIds.map(String));
+        const serverCats = json.agendaKategori.map(normalizeAgendaKategori).filter((c) => c.ID_Kategori && !delSet.has(String(c.ID_Kategori)));
+        const serverMap = new Map(serverCats.map((c) => [String(c.ID_Kategori), c]));
+        pendingAgendaKategoriSync = pendingAgendaKategoriSync.filter((p) => {
+          const s = serverMap.get(String(p.id));
+          return !(s && s.Nama_Kategori === p.entry.Nama_Kategori && s.Warna === p.entry.Warna);
+        });
+        const mergedMap = new Map(serverMap);
+        pendingAgendaKategoriSync.forEach((p) => {
+          if (!delSet.has(String(p.id))) mergedMap.set(String(p.id), normalizeAgendaKategori(p.entry));
+        });
+        if (mergedMap.size > 0) {
+          agendaKategori = Array.from(mergedMap.values());
+        } else if (!agendaDefaultsSeeded) {
+          agendaDefaultsSeeded = true;
+          agendaKategori = [...DEFAULT_AGENDA_KATEGORI];
+          agendaKategori.forEach((cat) => {
+            enqueuePendingAgenda('kategori', cat);
+            postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: cat });
+          });
+        }
+      }
+
+      if (Array.isArray(json.agendaTugas)) {
+        const delSet = new Set(deletedAgendaTugasIds.map(String));
+        const serverTasks = json.agendaTugas.map(normalizeAgendaTugas).filter((t) => t.ID_Tugas && t.Judul && !delSet.has(String(t.ID_Tugas)));
+        const serverMap = new Map(serverTasks.map((t) => [String(t.ID_Tugas), t]));
+        pendingAgendaTugasSync = pendingAgendaTugasSync.filter((p) => {
+          const s = serverMap.get(String(p.id));
+          return !(s && s.Judul === p.entry.Judul && s.Status === p.entry.Status && s.Deadline === p.entry.Deadline && s.Prioritas === p.entry.Prioritas);
+        });
+        const mergedMap = new Map(serverMap);
+        pendingAgendaTugasSync.forEach((p) => {
+          if (!delSet.has(String(p.id))) mergedMap.set(String(p.id), normalizeAgendaTugas(p.entry));
+        });
+        agendaTugas = Array.from(mergedMap.values());
+      }
+
+      if (Array.isArray(json.agendaJadwal)) {
+        const delSet = new Set(deletedAgendaJadwalIds.map(String));
+        const serverEvents = json.agendaJadwal.map(normalizeAgendaJadwal).filter((ev) => ev.ID_Jadwal && ev.Judul && !delSet.has(String(ev.ID_Jadwal)));
+        const serverMap = new Map(serverEvents.map((ev) => [String(ev.ID_Jadwal), ev]));
+        pendingAgendaJadwalSync = pendingAgendaJadwalSync.filter((p) => {
+          const s = serverMap.get(String(p.id));
+          return !(s && s.Judul === p.entry.Judul && s.Mulai === p.entry.Mulai && s.Selesai === p.entry.Selesai);
+        });
+        const mergedMap = new Map(serverMap);
+        pendingAgendaJadwalSync.forEach((p) => {
+          if (!delSet.has(String(p.id))) mergedMap.set(String(p.id), normalizeAgendaJadwal(p.entry));
+        });
+        agendaJadwal = Array.from(mergedMap.values());
+      }
+
+      savePendingSyncState();
+    }
+
+    function getAgendaCategoryById(id) {
+      return agendaKategori.find((c) => String(c.ID_Kategori) === String(id)) ||
+        agendaKategori[0] ||
+        { ID_Kategori: 'KAT-PRIBADI', Nama_Kategori: 'Pribadi', Warna: '#f59e0b' };
+    }
+
+    function isAgendaTaskOverdue(task) {
+      if (!task || task.Status === 'Selesai' || !task.Deadline) return false;
+      const parts = splitDateTimeParts(task.Deadline);
+      if (!parts.date) return false;
+      const now = new Date();
+      const curISO = formatLocalDateISO(now);
+      if (parts.date < curISO) return true;
+      if (parts.date === curISO && parts.time) {
+        const curMins = now.getHours() * 60 + now.getMinutes();
+        return timeStrToMins(parts.time) < curMins;
+      }
+      return false;
+    }
+
+    function isAgendaTaskDueToday(task) {
+      if (!task || task.Status === 'Selesai' || !task.Deadline) return false;
+      const parts = splitDateTimeParts(task.Deadline);
+      return parts.date === todayISO && !isAgendaTaskOverdue(task);
+    }
+
+    function populateScheduleCategorySelects() {
+      const opts = agendaKategori.map((c) => `<option value="${escapeHtml(c.ID_Kategori)}">${escapeHtml(c.Nama_Kategori)}</option>`).join('');
+      ['se_kategori', 'st_kategori'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const prev = el.value;
+        el.innerHTML = opts;
+        if (prev && agendaKategori.some((c) => String(c.ID_Kategori) === String(prev))) el.value = prev;
+      });
+      const filterEl = document.getElementById('sched-task-cat-filter');
+      if (filterEl) {
+        const prev = filterEl.value || 'semua';
+        filterEl.innerHTML = `<option value="semua">Semua Kategori</option>${opts}`;
+        filterEl.value = (prev === 'semua' || agendaKategori.some((c) => String(c.ID_Kategori) === String(prev))) ? prev : 'semua';
+      }
+    }
+
+    function populateScheduleTaskLinkSelect(selectedTaskId = '') {
+      const el = document.getElementById('se_tugas_id');
+      if (!el) return;
+      const sorted = [...agendaTugas].sort((a, b) => (a.Status === 'Selesai' ? 1 : 0) - (b.Status === 'Selesai' ? 1 : 0) || String(a.Deadline || '9999').localeCompare(String(b.Deadline || '9999')));
+      el.innerHTML = `<option value="">— Tidak terhubung tugas —</option>` + sorted.map((t) => {
+        const statusTag = t.Status === 'Selesai' ? ' [Selesai]' : '';
+        return `<option value="${escapeHtml(t.ID_Tugas)}">${escapeHtml(t.Judul)}${statusTag}</option>`;
+      }).join('');
+      if (selectedTaskId) el.value = selectedTaskId;
+    }
+
+    function switchScheduleSubTab(subTab) {
+      scheduleSubTab = subTab;
+      ['hari_ini', 'kalender', 'tugas'].forEach((t) => {
+        const btn = document.getElementById(`sched-subtab-${t}`);
+        const view = document.getElementById(`sched-view-${t.replace('_', '-')}`);
+        const active = t === subTab;
+        if (btn) {
+          btn.className = active
+            ? 'py-2 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 bg-[#0b1d3a] text-[#2fe0d0] shadow-sm'
+            : 'py-2 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 text-[#526582] hover:text-[#0b1d3a]';
+        }
+        if (view) view.classList.toggle('hidden', !active);
+      });
+      updateScheduleModule();
+    }
+
+    let scheduleTodayViewMode = 'grid';
+
+    function setScheduleTodayViewMode(mode) {
+      scheduleTodayViewMode = mode === 'list' ? 'list' : 'grid';
+      const gBtn = document.getElementById('sched-today-mode-grid');
+      const lBtn = document.getElementById('sched-today-mode-list');
+      if (gBtn) gBtn.className = scheduleTodayViewMode === 'grid' ? 'px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-2 py-0.5 rounded-md text-[10px] font-extrabold text-[#526582] transition';
+      if (lBtn) lBtn.className = scheduleTodayViewMode === 'list' ? 'px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-2 py-0.5 rounded-md text-[10px] font-extrabold text-[#526582] transition';
+      renderScheduleToday();
+    }
+
+    function hexToPastelPalette(hex) {
+      let clean = String(hex || '#5b7cf0').replace('#', '').trim();
+      if (clean.length === 3) clean = clean.split('').map((c) => c + c).join('');
+      if (!/^[0-9a-fA-F]{6}$/.test(clean)) clean = '5b7cf0';
+      const r = parseInt(clean.slice(0, 2), 16);
+      const g = parseInt(clean.slice(2, 4), 16);
+      const b = parseInt(clean.slice(4, 6), 16);
+      const mixW = (amt) => `rgb(${Math.round(r + (255 - r) * amt)}, ${Math.round(g + (255 - g) * amt)}, ${Math.round(b + (255 - b) * amt)})`;
+      return {
+        bg: mixW(0.80),
+        bgActive: mixW(0.66),
+        border: mixW(0.55),
+        accent: `#${clean}`,
+        text: '#0f172a',
+        subtext: '#475569'
+      };
+    }
+
+    function formatRemainingBadge(minsLeft) {
+      const m = Math.max(1, Math.round(minsLeft));
+      const h = Math.floor(m / 60);
+      const rem = m % 60;
+      if (h > 0 && rem > 0) return `Sisa ${h}j ${rem}m`;
+      if (h > 0) return `Sisa ${h}j`;
+      return `Sisa ${rem}m`;
+    }
+
+    function layoutOverlappingEvents(evs) {
+      const items = evs.map((ev) => {
+        const s = timeStrToMins(splitDateTimeParts(ev.Mulai).time || '09:00');
+        const eRaw = timeStrToMins(splitDateTimeParts(ev.Selesai).time || '10:00');
+        const e = Math.max(s + 20, eRaw);
+        return { ev, start: s, end: e, col: 0, totalCols: 1 };
+      }).sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+
+      const clusters = [];
+      items.forEach((it) => {
+        const lastCluster = clusters[clusters.length - 1];
+        if (lastCluster && it.start < lastCluster.maxEnd) {
+          lastCluster.items.push(it);
+          lastCluster.maxEnd = Math.max(lastCluster.maxEnd, it.end);
+        } else {
+          clusters.push({ items: [it], maxEnd: it.end });
+        }
+      });
+
+      clusters.forEach((cl) => {
+        const colEnds = [];
+        cl.items.forEach((it) => {
+          let assigned = -1;
+          for (let c = 0; c < colEnds.length; c++) {
+            if (colEnds[c] <= it.start) { assigned = c; break; }
+          }
+          if (assigned === -1) {
+            assigned = colEnds.length;
+            colEnds.push(it.end);
+          } else {
+            colEnds[assigned] = it.end;
+          }
+          it.col = assigned;
+        });
+        const total = Math.max(1, colEnds.length);
+        cl.items.forEach((it) => { it.totalCols = total; });
+      });
+
+      return items;
+    }
+
+    function openScheduleEventDetailModal(eventId) {
+      const ev = agendaJadwal.find((e) => String(e.ID_Jadwal) === String(eventId));
+      if (!ev) return;
+      const cat = getAgendaCategoryById(ev.ID_Kategori);
+      const pal = hexToPastelPalette(cat.Warna);
+      const sParts = splitDateTimeParts(ev.Mulai);
+      const eParts = splitDateTimeParts(ev.Selesai);
+      const dur = formatDurationLabel(sParts.time, eParts.time);
+
+      const badge = document.getElementById('sed_cat_badge');
+      if (badge) {
+        badge.textContent = cat.Nama_Kategori;
+        badge.style.backgroundColor = pal.bgActive;
+        badge.style.color = '#0f172a';
+        badge.style.border = `1px solid ${pal.border}`;
+      }
+      document.getElementById('sed_title').textContent = ev.Judul;
+      document.getElementById('sed_time').textContent = `${formatFullIdDate(sParts.date)} • ${sParts.time || '--:--'} – ${eParts.time || '--:--'}${dur ? ` (${dur})` : ''}`;
+
+      const loc = ev.Lokasi_atau_Link || '';
+      const locRow = document.getElementById('sed_loc_row');
+      const locVal = document.getElementById('sed_loc_val');
+      const locIcon = document.getElementById('sed_loc_icon');
+      if (loc && locRow && locVal) {
+        const isUrl = /^(https?:\/\/|www\.)/i.test(loc);
+        const safeHref = isUrl ? (/^https?:\/\//i.test(loc) ? loc : `https://${loc}`) : '';
+        locRow.classList.remove('hidden');
+        if (locIcon) locIcon.className = `fa-solid ${isUrl ? 'fa-link text-[#5b7cf0]' : 'fa-location-dot text-teal-600'} w-4 text-center`;
+        locVal.innerHTML = isUrl ? `<a href="${escapeHtml(safeHref)}" target="_blank" rel="noopener noreferrer" class="text-[#5b7cf0] underline">${escapeHtml(loc)}</a>` : escapeHtml(loc);
+      } else if (locRow) {
+        locRow.classList.add('hidden');
+      }
+
+      const linkedTask = ev.ID_Tugas ? agendaTugas.find((t) => String(t.ID_Tugas) === String(ev.ID_Tugas)) : null;
+      const taskRow = document.getElementById('sed_task_row');
+      const taskVal = document.getElementById('sed_task_val');
+      if (linkedTask && taskRow && taskVal) {
+        taskRow.classList.remove('hidden');
+        taskVal.textContent = `Tugas: ${linkedTask.Judul} (${linkedTask.Status})`;
+      } else if (taskRow) {
+        taskRow.classList.add('hidden');
+      }
+
+      const noteRow = document.getElementById('sed_note_row');
+      const noteVal = document.getElementById('sed_note_val');
+      if (ev.Catatan && noteRow && noteVal) {
+        noteRow.classList.remove('hidden');
+        noteVal.textContent = ev.Catatan;
+      } else if (noteRow) {
+        noteRow.classList.add('hidden');
+      }
+
+      document.getElementById('sed_btn_move').onclick = () => { toggleModal('modal-schedule-event-detail', false); openScheduleMoveModal(ev.ID_Jadwal); };
+      document.getElementById('sed_btn_edit').onclick = () => { toggleModal('modal-schedule-event-detail', false); openScheduleEventModal({ editId: ev.ID_Jadwal }); };
+      document.getElementById('sed_btn_delete').onclick = async () => {
+        const okConfirm = await askConfirm(`Hapus jadwal "${ev.Judul}"?`);
+        if (!okConfirm) return;
+        agendaJadwal = agendaJadwal.filter((x) => String(x.ID_Jadwal) !== String(ev.ID_Jadwal));
+        pendingAgendaJadwalSync = pendingAgendaJadwalSync.filter((p) => String(p.id) !== String(ev.ID_Jadwal));
+        if (!deletedAgendaJadwalIds.includes(String(ev.ID_Jadwal))) deletedAgendaJadwalIds.push(String(ev.ID_Jadwal));
+        savePendingSyncState();
+        saveLocalBackup();
+        toggleModal('modal-schedule-event-detail', false);
+        updateScheduleModule();
+        const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id: ev.ID_Jadwal });
+        if (ok) {
+          deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(ev.ID_Jadwal));
+          savePendingSyncState();
+          showToast('Jadwal dihapus & tersinkron ke SPS 1!');
+        } else {
+          showToast('Jadwal dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+        }
+      };
+
+      toggleModal('modal-schedule-event-detail', true);
+    }
+
+    function renderCoursicleTimeGrid(days, eventsByDate, tasksByDate, opts = {}) {
+      const isSingleDay = days.length === 1;
+      const now = new Date();
+      const nowISO = formatLocalDateISO(now);
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+
+      let startHour = opts.defaultStartHour ?? 7;
+      let endHour = opts.defaultEndHour ?? 21;
+      days.forEach((d) => {
+        (eventsByDate[d.iso] || []).forEach((ev) => {
+          const sM = timeStrToMins(splitDateTimeParts(ev.Mulai).time || '09:00');
+          const eM = timeStrToMins(splitDateTimeParts(ev.Selesai).time || '10:00');
+          startHour = Math.min(startHour, Math.floor(sM / 60));
+          endHour = Math.max(endHour, Math.ceil(eM / 60));
+        });
+      });
+      startHour = Math.max(0, startHour);
+      endHour = Math.min(24, Math.max(startHour + 6, endHour));
+
+      const pxPerHour = isSingleDay ? 62 : 58;
+      const pxPerMin = pxPerHour / 60;
+      const totalHours = endHour - startHour;
+      const totalHeight = totalHours * pxPerHour;
+      const startMinsBase = startHour * 60;
+
+      const hasAnyDueBanner = days.some((d) => (tasksByDate[d.iso] || []).length > 0);
+      const colMinWidthClass = isSingleDay ? 'min-w-0 flex-1' : 'min-w-[104px] md:min-w-0 flex-1';
+
+      const hourLabelsHtml = [];
+      for (let h = startHour; h < endHour; h++) {
+        hourLabelsHtml.push(`<div style="height:${pxPerHour}px;" class="relative pr-2 text-right select-none">
+          <span class="text-[10px] font-semibold text-slate-400 tabular-nums leading-none relative -top-1.5">${pad2(h)}:00</span>
+        </div>`);
+      }
+
+      const dayHeadersHtml = days.map((d) => {
+        const isToday = d.iso === nowISO;
+        const ddMm = `${pad2(d.dateObj.getDate())}/${pad2(d.dateObj.getMonth() + 1)}`;
+        return `<div data-day-col="${d.iso}" class="${colMinWidthClass} py-2 px-1 text-center border-l border-slate-100 first:border-l-0 ${isToday ? 'bg-[#f0f9ff]/90 border-b-2 border-b-[#0ea5e9]' : 'border-b border-b-slate-200/80'}">
+          <div class="text-[10px] font-bold ${isToday ? 'text-[#0284c7]' : 'text-slate-400'}">${escapeHtml(d.label)}</div>
+          <div class="text-[11px] font-extrabold tabular-nums ${isToday ? 'text-[#0284c7]' : 'text-slate-600'}">${ddMm}</div>
+        </div>`;
+      }).join('');
+
+      const bannerRowHtml = hasAnyDueBanner ? `
+        <div class="flex border-b border-slate-100 bg-white">
+          <div class="w-12 sm:w-14 shrink-0 sticky left-0 z-20 bg-white border-r border-slate-100 flex items-center justify-end pr-2">
+            <span class="text-[9px] font-bold text-slate-400 uppercase">Tugas</span>
+          </div>
+          <div class="flex flex-1">
+            ${days.map((d) => {
+              const tList = tasksByDate[d.iso] || [];
+              const isToday = d.iso === nowISO;
+              return `<div class="${colMinWidthClass} p-1 space-y-1 border-l border-slate-100 first:border-l-0 ${isToday ? 'bg-[#f0f9ff]/60' : ''}">
+                ${tList.slice(0, 2).map((t) => `<button type="button" onclick="openScheduleTaskModal({ editId: '${escapeHtml(t.ID_Tugas)}' })" class="w-full px-1.5 py-0.5 rounded-md text-[10px] font-bold truncate text-center transition active:scale-95 ${t.Status === 'Selesai' ? 'bg-teal-100 text-teal-800 line-through' : 'bg-[#ffedd5] text-[#9a3412] hover:bg-[#fed7aa]'}" title="${escapeHtml(t.Judul)}">${escapeHtml(t.Judul)}</button>`).join('')}
+                ${tList.length > 2 ? `<div class="text-[9px] font-bold text-center text-[#9a3412]">+${tList.length - 2} tugas</div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>` : '';
+
+      const dayColumnsHtml = days.map((d) => {
+        const isToday = d.iso === nowISO;
+        const laidOut = layoutOverlappingEvents(eventsByDate[d.iso] || []);
+
+        const slotButtons = [];
+        for (let h = startHour; h < endHour; h++) {
+          const st = `${pad2(h)}:00`;
+          const et = `${pad2(Math.min(23, h + 1))}:00`;
+          slotButtons.push(`<button type="button" onclick="openScheduleEventModal({ date: '${d.iso}', startTime: '${st}', endTime: '${et}' })" style="height:${pxPerHour}px;" class="block w-full border-b border-slate-100/90 hover:bg-[#eef6ff]/50 transition text-left" title="Tambah jadwal ${d.label} ${st}"></button>`);
+        }
+
+        const blocksHtml = laidOut.map((item) => {
+          const ev = item.ev;
+          const cat = getAgendaCategoryById(ev.ID_Kategori);
+          const pal = hexToPastelPalette(cat.Warna);
+          const sParts = splitDateTimeParts(ev.Mulai);
+          const eParts = splitDateTimeParts(ev.Selesai);
+          const topPx = Math.max(0, (item.start - startMinsBase) * pxPerMin) + 1;
+          const heightPx = Math.max(28, (item.end - item.start) * pxPerMin - 2);
+          const widthPct = 100 / item.totalCols;
+          const leftPct = item.col * widthPct;
+
+          const isNow = isToday && nowMins >= item.start && nowMins < item.end;
+          const isPast = isToday && nowMins >= item.end;
+          const minsLeft = isNow ? (item.end - nowMins) : 0;
+          const showLoc = heightPx >= 56 && ev.Lokasi_atau_Link;
+
+          return `<button type="button" onclick="event.stopPropagation(); openScheduleEventDetailModal('${escapeHtml(ev.ID_Jadwal)}')" style="top:${topPx}px;height:${heightPx}px;left:calc(${leftPct}% + 3px);width:calc(${widthPct}% - 6px);background-color:${isNow ? pal.bgActive : pal.bg};border:1px solid ${pal.border};color:${pal.text};" class="absolute z-10 rounded-xl p-1.5 sm:p-2 text-left overflow-hidden shadow-[0_1px_2px_rgba(15,23,42,0.05)] hover:shadow-md active:scale-[0.99] transition flex flex-col justify-start ${isPast ? 'opacity-65' : ''}">
+            <div class="text-[11px] font-bold leading-tight truncate">${escapeHtml(ev.Judul)}</div>
+            <div class="text-[9.5px] font-medium tabular-nums leading-tight mt-0.5 truncate" style="color:${pal.subtext};">${escapeHtml(sParts.time)} - ${escapeHtml(eParts.time)}</div>
+            ${showLoc ? `<div class="text-[9px] font-medium truncate mt-0.5 opacity-80" style="color:${pal.subtext};"><i class="fa-solid fa-location-dot mr-0.5 text-[8px]"></i>${escapeHtml(ev.Lokasi_atau_Link)}</div>` : ''}
+            ${isNow ? `<span class="mt-auto self-end px-1.5 py-0.5 rounded-md bg-[#ef4444] text-white text-[9px] font-extrabold leading-none shadow-sm tabular-nums">${escapeHtml(formatRemainingBadge(minsLeft))}</span>` : ''}
+          </button>`;
+        }).join('');
+
+        let nowLineHtml = '';
+        if (isToday && nowMins >= startMinsBase && nowMins <= endHour * 60) {
+          const lineTop = (nowMins - startMinsBase) * pxPerMin;
+          nowLineHtml = `<div style="top:${lineTop}px;" class="absolute left-0 right-0 z-20 pointer-events-none flex items-center">
+            <span class="w-2 h-2 rounded-full bg-[#ef4444] -ml-1 shadow-sm shrink-0"></span>
+            <span class="h-[1.5px] bg-[#ef4444] flex-1"></span>
+          </div>`;
+        }
+
+        return `<div class="${colMinWidthClass} relative border-l border-slate-100 first:border-l-0 ${isToday ? 'bg-[#f0f9ff]/65' : 'bg-white'}" style="height:${totalHeight}px;">
+          ${slotButtons.join('')}
+          ${blocksHtml}
+          ${nowLineHtml}
+        </div>`;
+      }).join('');
+
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div id="${isSingleDay ? 'sched-today-timetable-scroll' : 'sched-week-timetable-scroll'}" class="overflow-x-auto">
+            <div class="${isSingleDay ? 'w-full' : 'min-w-[776px] md:min-w-0 w-full'}">
+              <!-- Sticky Day Headers -->
+              <div class="flex bg-white sticky top-0 z-30">
+                <div class="w-12 sm:w-14 shrink-0 sticky left-0 z-30 bg-white border-r border-slate-100 border-b border-b-slate-200/80 flex items-center justify-center">
+                  <span class="text-[9px] font-bold text-slate-400 uppercase">Jam</span>
+                </div>
+                <div class="flex flex-1">${dayHeadersHtml}</div>
+              </div>
+              ${bannerRowHtml}
+              <!-- Time Grid Body -->
+              <div class="flex relative">
+                <div class="w-12 sm:w-14 shrink-0 sticky left-0 z-20 bg-white border-r border-slate-100 pt-0.5">
+                  ${hourLabelsHtml.join('')}
+                </div>
+                <div class="flex flex-1">${dayColumnsHtml}</div>
+              </div>
+            </div>
+          </div>
+          <div class="px-3 py-2 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between text-[10px] text-[#526582] font-semibold">
+            <span><i class="fa-regular fa-hand-pointer mr-1 text-[#5b7cf0]"></i>Ketuk slot kosong untuk tambah jadwal, ketuk blok untuk edit/pindah</span>
+            ${!isSingleDay ? '<span class="md:hidden text-[#5b7cf0] font-bold">Geser ⇄</span>' : ''}
+          </div>
+        </div>`;
+    }
+
+    function renderScheduleEventCard(ev, options = {}) {
+      const cat = getAgendaCategoryById(ev.ID_Kategori);
+      const pal = hexToPastelPalette(cat.Warna);
+      const sParts = splitDateTimeParts(ev.Mulai);
+      const eParts = splitDateTimeParts(ev.Selesai);
+      const dur = formatDurationLabel(sParts.time, eParts.time);
+      const linkedTask = ev.ID_Tugas ? agendaTugas.find((t) => String(t.ID_Tugas) === String(ev.ID_Tugas)) : null;
+      const loc = ev.Lokasi_atau_Link || '';
+      const isUrl = /^(https?:\/\/|www\.)/i.test(loc);
+      const safeHref = isUrl ? (/^https?:\/\//i.test(loc) ? loc : `https://${loc}`) : '';
+      const showDateChip = Boolean(options.showDateChip && sParts.date);
+
+      return `
+        <div onclick="openScheduleEventDetailModal('${escapeHtml(ev.ID_Jadwal)}')" style="background-color:${pal.bg};border:1px solid ${pal.border};" class="rounded-2xl p-3 flex gap-3 items-stretch relative overflow-hidden cursor-pointer hover:shadow-md transition">
+          <div class="w-1.5 rounded-full shrink-0" style="background-color:${escapeHtml(cat.Warna)};"></div>
+          <div class="flex-1 min-w-0 space-y-1.5">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center flex-wrap gap-1.5 mb-0.5">
+                  <span class="text-[11px] font-black text-[#0b1d3a] tabular-nums">${escapeHtml(sParts.time || '--:--')} – ${escapeHtml(eParts.time || '--:--')}</span>
+                  ${dur ? `<span class="text-[10px] font-bold text-[#526582]">(${escapeHtml(dur)})</span>` : ''}
+                  ${showDateChip ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white/80 text-[#0b1d3a]">${escapeHtml(formatShortIdDate(sParts.date))}</span>` : ''}
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white" style="background-color:${escapeHtml(cat.Warna)};">${escapeHtml(cat.Nama_Kategori)}</span>
+                </div>
+                <h4 class="text-xs sm:text-[13px] font-extrabold text-[#0b1d3a] leading-snug break-words">${escapeHtml(ev.Judul)}</h4>
+              </div>
+              <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
+                <button type="button" onclick="openScheduleMoveModal('${escapeHtml(ev.ID_Jadwal)}')" class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-[#5b7cf0] flex items-center justify-center text-[11px] active:scale-95 transition shadow-sm" title="Pindahkan jadwal"><i class="fa-solid fa-arrows-up-down-left-right"></i></button>
+                <button type="button" onclick="openScheduleEventModal({ editId: '${escapeHtml(ev.ID_Jadwal)}' })" class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-[#0b1d3a] flex items-center justify-center text-[11px] active:scale-95 transition shadow-sm" title="Edit jadwal"><i class="fa-solid fa-pen"></i></button>
+              </div>
+            </div>
+            ${loc ? `<div class="text-[11px] text-[#334155] flex items-center gap-1.5 min-w-0" onclick="event.stopPropagation()">
+              <i class="fa-solid ${isUrl ? 'fa-link text-[#5b7cf0]' : 'fa-location-dot text-teal-600'} text-[10px] shrink-0"></i>
+              ${isUrl ? `<a href="${escapeHtml(safeHref)}" target="_blank" rel="noopener noreferrer" class="text-[#5b7cf0] font-bold underline truncate">${escapeHtml(loc)}</a>` : `<span class="truncate font-medium">${escapeHtml(loc)}</span>`}
+            </div>` : ''}
+            ${linkedTask ? `<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/80 border border-teal-200/80 text-[10px] font-bold text-teal-800 max-w-full">
+              <i class="fa-solid fa-list-check text-[9px]"></i><span class="truncate">Tugas: ${escapeHtml(linkedTask.Judul)}</span>
+            </div>` : ''}
+            ${ev.Catatan ? `<p class="text-[11px] text-[#475569] leading-relaxed break-words">${escapeHtml(ev.Catatan)}</p>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function renderScheduleTaskCard(task, options = {}) {
+      const cat = getAgendaCategoryById(task.ID_Kategori);
+      const isDone = task.Status === 'Selesai';
+      const overdue = !isDone && isAgendaTaskOverdue(task);
+      const dueToday = !isDone && isAgendaTaskDueToday(task);
+      const dParts = splitDateTimeParts(task.Deadline);
+      const prioCls = task.Prioritas === 'Tinggi'
+        ? 'bg-rose-100 text-rose-700 border-rose-200'
+        : (task.Prioritas === 'Rendah' ? 'bg-slate-100 text-slate-600 border-slate-200' : 'bg-amber-100 text-amber-800 border-amber-200');
+      const linkedSchedule = agendaJadwal.find((ev) => String(ev.ID_Tugas) === String(task.ID_Tugas));
+      const linkedStart = linkedSchedule ? splitDateTimeParts(linkedSchedule.Mulai) : null;
+      let deadlineBadge = '';
+      if (dParts.date) {
+        const dtTxt = `${formatShortIdDate(dParts.date)}${dParts.time ? ` • ${dParts.time}` : ''}`;
+        if (overdue) deadlineBadge = `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700"><i class="fa-solid fa-clock mr-1"></i>Terlambat (${escapeHtml(dtTxt)})</span>`;
+        else if (dueToday) deadlineBadge = `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800"><i class="fa-solid fa-bell mr-1"></i>Hari Ini${dParts.time ? ` • ${escapeHtml(dParts.time)}` : ''}</span>`;
+        else deadlineBadge = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-[#526582]"><i class="fa-regular fa-calendar mr-1"></i>${escapeHtml(dtTxt)}</span>`;
+      }
+
+      return `
+        <div class="banner-glass-card rounded-2xl p-3 space-y-2 ${overdue ? 'border-rose-300 bg-rose-50/40' : ''} ${isDone ? 'opacity-80' : ''}">
+          <div class="flex items-start gap-2.5">
+            <button type="button" onclick="toggleAgendaTugasStatus('${escapeHtml(task.ID_Tugas)}')" class="mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition active:scale-90 ${isDone ? 'bg-teal-600 border-teal-600 text-white' : (overdue ? 'border-rose-400 hover:border-teal-600 bg-white' : 'border-slate-300 hover:border-teal-600 bg-white')}" title="${isDone ? 'Tandai Aktif kembali' : 'Tandai Selesai'}">
+              ${isDone ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+            </button>
+            <div class="flex-1 min-w-0 space-y-1">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="text-xs sm:text-[13px] font-extrabold leading-snug break-words ${isDone ? 'line-through text-[#526582]' : 'text-[#0b1d3a]'}">${escapeHtml(task.Judul)}</h4>
+                <button type="button" onclick="openScheduleTaskModal({ editId: '${escapeHtml(task.ID_Tugas)}' })" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-[#0b1d3a] flex items-center justify-center text-[10px] shrink-0 active:scale-95 transition" title="Edit tugas"><i class="fa-solid fa-pen"></i></button>
+              </div>
+              <div class="flex items-center flex-wrap gap-1.5">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white" style="background-color:${escapeHtml(cat.Warna)};">${escapeHtml(cat.Nama_Kategori)}</span>
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${prioCls}">${escapeHtml(task.Prioritas)}</span>
+                ${deadlineBadge}
+              </div>
+              ${task.Catatan ? `<p class="text-[11px] text-[#526582] leading-relaxed break-words">${escapeHtml(task.Catatan)}</p>` : ''}
+              ${isDone && task.Waktu_Selesai ? `<p class="text-[10px] font-bold text-teal-700"><i class="fa-solid fa-circle-check mr-1"></i>Selesai: ${escapeHtml(task.Waktu_Selesai)}</p>` : ''}
+              ${linkedSchedule && linkedStart ? `<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#eef4ff] text-[#5b7cf0] text-[10px] font-extrabold"><i class="fa-solid fa-calendar-check text-[9px]"></i>Terjadwal: ${escapeHtml(formatShortIdDate(linkedStart.date))} ${escapeHtml(linkedStart.time)}</div>` : ''}
+            </div>
+          </div>
+          ${!isDone ? `<div class="flex items-center justify-end gap-1.5 pt-1.5 border-t border-slate-200/70">
+            <button type="button" onclick="scheduleFromTugas('${escapeHtml(task.ID_Tugas)}')" class="px-2.5 py-1 rounded-xl bg-[#eef4ff] hover:bg-[#e1ecff] text-[#5b7cf0] text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition"><i class="fa-solid fa-calendar-plus text-[10px]"></i><span>Jadwalkan</span></button>
+            <button type="button" onclick="toggleAgendaTugasStatus('${escapeHtml(task.ID_Tugas)}')" class="px-2.5 py-1 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-extrabold flex items-center gap-1 active:scale-95 transition"><i class="fa-solid fa-check text-[10px]"></i><span>Selesai</span></button>
+          </div>` : ''}
+        </div>`;
+    }
+
+    function updateScheduleModule() {
+      populateScheduleCategorySelects();
+      const subtitleEl = document.getElementById('schedule-today-subtitle');
+      if (subtitleEl) subtitleEl.textContent = formatFullIdDate(todayISO);
+
+      const todayEvents = agendaJadwal
+        .filter((ev) => splitDateTimeParts(ev.Mulai).date === todayISO)
+        .sort((a, b) => String(a.Mulai).localeCompare(String(b.Mulai)));
+      const activeTasks = agendaTugas.filter((t) => t.Status !== 'Selesai');
+      const overdueTasks = activeTasks.filter(isAgendaTaskOverdue);
+
+      const kToday = document.getElementById('sched-kpi-today-count');
+      const kActive = document.getElementById('sched-kpi-active-tasks');
+      const kOverdue = document.getElementById('sched-kpi-overdue-tasks');
+      const kNext = document.getElementById('sched-kpi-next-event');
+      if (kToday) kToday.textContent = `${todayEvents.length} Jadwal`;
+      if (kActive) kActive.textContent = `${activeTasks.length} Tugas`;
+      if (kOverdue) kOverdue.textContent = `${overdueTasks.length} Tugas`;
+      if (kNext) {
+        const now = new Date();
+        const curMins = now.getHours() * 60 + now.getMinutes();
+        const nextEv = todayEvents.find((ev) => timeStrToMins(splitDateTimeParts(ev.Selesai || ev.Mulai).time) >= curMins) || todayEvents[0];
+        if (nextEv) {
+          const sp = splitDateTimeParts(nextEv.Mulai);
+          kNext.textContent = `${sp.time || '--:--'} • ${nextEv.Judul}`;
+        } else {
+          kNext.textContent = 'Belum ada jadwal tersisa hari ini';
+        }
+      }
+
+      if (scheduleSubTab === 'hari_ini') renderScheduleToday();
+      else if (scheduleSubTab === 'kalender') renderScheduleCalendar();
+      else renderScheduleTasks();
+    }
+
+    function renderScheduleToday() {
+      const todayEvents = agendaJadwal
+        .filter((ev) => splitDateTimeParts(ev.Mulai).date === todayISO)
+        .sort((a, b) => String(a.Mulai).localeCompare(String(b.Mulai)));
+
+      const prioOrder = { Tinggi: 0, Sedang: 1, Rendah: 2 };
+      const dueTodayTasks = agendaTugas
+        .filter(isAgendaTaskDueToday)
+        .sort((a, b) => String(a.Deadline).localeCompare(String(b.Deadline)) || (prioOrder[a.Prioritas] ?? 1) - (prioOrder[b.Prioritas] ?? 1));
+
+      const eventsEl = document.getElementById('sched-today-events-list');
+      if (eventsEl) {
+        if (scheduleTodayViewMode === 'grid') {
+          const todayObj = parseISODateLocal(todayISO);
+          const dayShortMap = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+          const todayDays = [{ iso: todayISO, dateObj: todayObj, label: dayShortMap[todayObj.getDay()] }];
+          eventsEl.innerHTML = renderCoursicleTimeGrid(
+            todayDays,
+            { [todayISO]: todayEvents },
+            { [todayISO]: dueTodayTasks },
+            { defaultStartHour: 7, defaultEndHour: 21 }
+          );
+        } else {
+          if (!todayEvents.length) {
+            eventsEl.innerHTML = `<div class="banner-glass-card rounded-2xl p-5 text-center space-y-2.5">
+              <p class="text-xs font-bold text-[#526582]">Belum ada jadwal untuk hari ini.</p>
+              <button type="button" onclick="openScheduleEventModal({ date: todayISO })" class="px-4 py-2 rounded-full bg-[#0b1d3a] text-[#2fe0d0] text-xs font-extrabold shadow active:scale-95 transition">+ Tambah Jadwal Hari Ini</button>
+            </div>`;
+          } else {
+            eventsEl.innerHTML = todayEvents.map((ev) => renderScheduleEventCard(ev)).join('');
+          }
+        }
+      }
+
+      const overdueTasks = agendaTugas
+        .filter(isAgendaTaskOverdue)
+        .sort((a, b) => String(a.Deadline).localeCompare(String(b.Deadline)) || (prioOrder[a.Prioritas] ?? 1) - (prioOrder[b.Prioritas] ?? 1));
+      const overdueWrap = document.getElementById('sched-overdue-tasks-wrap');
+      const overdueBadge = document.getElementById('sched-overdue-badge');
+      const overdueList = document.getElementById('sched-overdue-tasks-list');
+      if (overdueWrap && overdueList) {
+        overdueWrap.classList.toggle('hidden', overdueTasks.length === 0);
+        if (overdueBadge) overdueBadge.textContent = String(overdueTasks.length);
+        overdueList.innerHTML = overdueTasks.map((t) => renderScheduleTaskCard(t)).join('');
+      }
+
+      const dueList = document.getElementById('sched-due-today-tasks-list');
+      if (dueList) {
+        if (!dueTodayTasks.length) {
+          dueList.innerHTML = `<div class="banner-glass-card rounded-2xl p-4 text-center text-xs font-bold text-[#526582]">Tidak ada tugas yang jatuh tempo hari ini.</div>`;
+        } else {
+          dueList.innerHTML = dueTodayTasks.map((t) => renderScheduleTaskCard(t)).join('');
+        }
+      }
+    }
+
+    function setScheduleCalendarMode(mode) {
+      scheduleCalendarMode = mode === 'month' ? 'month' : 'week';
+      const wBtn = document.getElementById('sched-cal-mode-week');
+      const mBtn = document.getElementById('sched-cal-mode-month');
+      if (wBtn) wBtn.className = scheduleCalendarMode === 'week' ? 'px-3 py-1 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-3 py-1 rounded-lg text-[11px] font-extrabold text-[#526582] transition';
+      if (mBtn) mBtn.className = scheduleCalendarMode === 'month' ? 'px-3 py-1 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-3 py-1 rounded-lg text-[11px] font-extrabold text-[#526582] transition';
+      scheduleWeekFilterBySelectedDay = false;
+      renderScheduleCalendar();
+    }
+
+    function navigateScheduleCalendar(delta) {
+      const dt = parseISODateLocal(scheduleCalendarAnchorDate);
+      if (scheduleCalendarMode === 'week') {
+        dt.setDate(dt.getDate() + delta * 7);
+      } else {
+        dt.setDate(1);
+        dt.setMonth(dt.getMonth() + delta);
+      }
+      scheduleCalendarAnchorDate = formatLocalDateISO(dt);
+      scheduleSelectedDate = scheduleCalendarAnchorDate;
+      scheduleWeekFilterBySelectedDay = false;
+      renderScheduleCalendar();
+    }
+
+    function jumpScheduleCalendarToday() {
+      scheduleCalendarAnchorDate = todayISO;
+      scheduleSelectedDate = todayISO;
+      scheduleWeekFilterBySelectedDay = false;
+      renderScheduleCalendar();
+    }
+
+    function setScheduleCalendarCategoryFilter(catId) {
+      scheduleCalendarCategoryFilter = scheduleCalendarCategoryFilter === catId ? 'semua' : catId;
+      renderScheduleCalendar();
+    }
+
+    function selectScheduleCalendarDate(iso, toggleWeekFocus = false) {
+      scheduleSelectedDate = iso;
+      renderScheduleCalendar();
+    }
+
+    function renderScheduleCalendar() {
+      const legendEl = document.getElementById('sched-cal-category-legend');
+      if (legendEl) {
+        const allActive = scheduleCalendarCategoryFilter === 'semua';
+        legendEl.innerHTML = `<button type="button" onclick="setScheduleCalendarCategoryFilter('semua')" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold shrink-0 border transition ${allActive ? 'bg-[#0b1d3a] text-[#2fe0d0] border-[#0b1d3a]' : 'bg-white text-[#526582] border-slate-200'}">Semua</button>` +
+          agendaKategori.map((c) => {
+            const active = scheduleCalendarCategoryFilter === c.ID_Kategori;
+            const pal = hexToPastelPalette(c.Warna);
+            return `<button type="button" onclick="setScheduleCalendarCategoryFilter('${escapeHtml(c.ID_Kategori)}')" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold shrink-0 border flex items-center gap-1.5 transition ${active ? 'shadow-sm' : 'bg-white text-[#0b1d3a] border-slate-200'}" style="${active ? `background-color:${pal.bgActive};border-color:${escapeHtml(c.Warna)};color:#0f172a;` : ''}">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color:${escapeHtml(c.Warna)};"></span>
+              <span>${escapeHtml(c.Nama_Kategori)}</span>
+            </button>`;
+          }).join('');
+      }
+
+      const filteredEvents = agendaJadwal
+        .filter((ev) => scheduleCalendarCategoryFilter === 'semua' || String(ev.ID_Kategori) === String(scheduleCalendarCategoryFilter))
+        .sort((a, b) => String(a.Mulai).localeCompare(String(b.Mulai)));
+      const eventsByDate = {};
+      filteredEvents.forEach((ev) => {
+        const d = splitDateTimeParts(ev.Mulai).date;
+        if (!d) return;
+        if (!eventsByDate[d]) eventsByDate[d] = [];
+        eventsByDate[d].push(ev);
+      });
+
+      const tasksByDate = {};
+      agendaTugas
+        .filter((t) => scheduleCalendarCategoryFilter === 'semua' || String(t.ID_Kategori) === String(scheduleCalendarCategoryFilter))
+        .forEach((t) => {
+          const d = splitDateTimeParts(t.Deadline).date;
+          if (!d) return;
+          if (!tasksByDate[d]) tasksByDate[d] = [];
+          tasksByDate[d].push(t);
+        });
+
+      const periodEl = document.getElementById('sched-cal-period-label');
+      const gridEl = document.getElementById('sched-calendar-grid-container');
+      const agendaEl = document.getElementById('sched-calendar-agenda-container');
+      const dayShort = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
+      if (scheduleCalendarMode === 'week') {
+        const anchor = parseISODateLocal(scheduleCalendarAnchorDate);
+        const dow = (anchor.getDay() + 6) % 7; // Senin = 0
+        const monday = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() - dow);
+        const weekDays = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+          weekDays.push({ iso: formatLocalDateISO(d), dateObj: d, label: dayShort[i] });
+        }
+        if (periodEl) {
+          periodEl.textContent = `${formatShortIdDate(weekDays[0].iso)} – ${formatShortIdDate(weekDays[6].iso)} ${weekDays[6].dateObj.getFullYear()}`;
+        }
+        if (gridEl) {
+          gridEl.innerHTML = renderCoursicleTimeGrid(weekDays, eventsByDate, tasksByDate, { defaultStartHour: 7, defaultEndHour: 21 });
+          // Auto-scroll mobile timetable ke kolom Hari Ini agar langsung terlihat rapi (3 hari)
+          requestAnimationFrame(() => {
+            const scroller = document.getElementById('sched-week-timetable-scroll');
+            const todayCol = scroller ? scroller.querySelector(`[data-day-col="${todayISO}"]`) : null;
+            if (scroller && todayCol && scroller.scrollWidth > scroller.clientWidth) {
+              scroller.scrollLeft = Math.max(0, todayCol.offsetLeft - 56);
+            }
+          });
+        }
+        if (agendaEl) {
+          agendaEl.innerHTML = '';
+        }
+      } else {
+        // BULANAN (dengan mini blok pastel ala Coursicle)
+        const anchor = parseISODateLocal(scheduleCalendarAnchorDate);
+        const year = anchor.getFullYear();
+        const month = anchor.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startOffset = (firstDay.getDay() + 6) % 7;
+        const totalCells = Math.ceil((startOffset + lastDay.getDate()) / 7) * 7;
+
+        if (periodEl) {
+          periodEl.textContent = firstDay.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        }
+
+        const cells = [];
+        for (let i = 0; i < totalCells; i++) {
+          const d = new Date(year, month, 1 - startOffset + i);
+          const iso = formatLocalDateISO(d);
+          const inMonth = d.getMonth() === month;
+          const evs = eventsByDate[iso] || [];
+          const isToday = iso === todayISO;
+          const isSel = iso === scheduleSelectedDate;
+          const chips = evs.slice(0, 2).map((ev) => {
+            const cat = getAgendaCategoryById(ev.ID_Kategori);
+            const pal = hexToPastelPalette(cat.Warna);
+            return `<div style="background-color:${pal.bgActive};color:#0f172a;border:1px solid ${pal.border};" class="w-full px-1 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-bold truncate leading-tight text-left">${escapeHtml(ev.Judul)}</div>`;
+          }).join('');
+          const moreCount = evs.length > 2 ? `<div class="text-[8.5px] font-extrabold ${isSel ? 'text-[#8fe6f4]' : 'text-[#5b7cf0]'} leading-none">+${evs.length - 2}</div>` : '';
+
+          cells.push(`<button type="button" onclick="selectScheduleCalendarDate('${iso}', false)" class="min-h-[68px] sm:min-h-[82px] p-1 rounded-xl flex flex-col items-stretch gap-0.5 transition text-left ${isSel ? 'bg-[#0b1d3a] text-white shadow' : (isToday ? 'bg-[#f0f9ff] text-[#0284c7] ring-1 ring-[#0ea5e9]' : (inMonth ? 'bg-white hover:bg-slate-50 text-[#0b1d3a] border border-slate-100' : 'bg-slate-50/50 text-slate-400 opacity-50'))}">
+            <span class="text-[10.5px] font-extrabold tabular-nums text-center">${d.getDate()}</span>
+            <div class="space-y-0.5 flex-1 overflow-hidden">${chips}${moreCount}</div>
+          </button>`);
+        }
+
+        if (gridEl) {
+          gridEl.innerHTML = `
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-2.5 space-y-1.5">
+              <div class="grid grid-cols-7 gap-1 text-center">
+                ${dayShort.map((d) => `<span class="text-[10px] font-black uppercase text-slate-400 py-0.5">${d}</span>`).join('')}
+              </div>
+              <div class="grid grid-cols-7 gap-1">${cells.join('')}</div>
+            </div>`;
+        }
+
+        if (agendaEl) {
+          const selEvs = eventsByDate[scheduleSelectedDate] || [];
+          const selTasks = tasksByDate[scheduleSelectedDate] || [];
+          agendaEl.innerHTML = `
+            <div class="flex items-center justify-between px-1">
+              <span class="text-[11px] font-black uppercase tracking-wider text-[#0b1d3a]">${escapeHtml(formatFullIdDate(scheduleSelectedDate))}</span>
+              <button type="button" onclick="openScheduleEventModal({ date: '${scheduleSelectedDate}' })" class="text-[11px] font-extrabold text-[#5b7cf0] hover:underline">+ Tambah di Tanggal Ini</button>
+            </div>
+            ${selEvs.length ? selEvs.map((ev) => renderScheduleEventCard(ev)).join('') : `<div class="banner-glass-card rounded-2xl p-4 text-center text-xs font-bold text-[#526582]">Tidak ada jadwal pada tanggal ini.</div>`}
+            ${selTasks.length ? `<div class="space-y-2 pt-1"><span class="text-[10px] font-black uppercase tracking-wider text-[#526582] px-1 block">Deadline Tugas di Tanggal Ini</span>${selTasks.map((t) => renderScheduleTaskCard(t)).join('')}</div>` : ''}`;
+        }
+      }
+    }
+
+    function setScheduleTaskFilter(statusFilter) {
+      scheduleTaskFilter = statusFilter === 'selesai' ? 'selesai' : 'aktif';
+      const aBtn = document.getElementById('sched-task-filter-aktif');
+      const sBtn = document.getElementById('sched-task-filter-selesai');
+      if (aBtn) aBtn.className = scheduleTaskFilter === 'aktif' ? 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold text-[#526582] transition';
+      if (sBtn) sBtn.className = scheduleTaskFilter === 'selesai' ? 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold bg-[#0b1d3a] text-[#2fe0d0] transition' : 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold text-[#526582] transition';
+      renderScheduleTasks();
+    }
+
+    function renderScheduleTasks() {
+      const catFilter = document.getElementById('sched-task-cat-filter')?.value || 'semua';
+      const prioFilter = document.getElementById('sched-task-prio-filter')?.value || 'semua';
+
+      const allAktif = agendaTugas.filter((t) => t.Status !== 'Selesai');
+      const allSelesai = agendaTugas.filter((t) => t.Status === 'Selesai');
+      const cAktif = document.getElementById('sched-task-count-aktif');
+      const cSelesai = document.getElementById('sched-task-count-selesai');
+      if (cAktif) cAktif.textContent = `(${allAktif.length})`;
+      if (cSelesai) cSelesai.textContent = `(${allSelesai.length})`;
+
+      const base = scheduleTaskFilter === 'selesai' ? allSelesai : allAktif;
+      const filtered = base.filter((t) => {
+        if (catFilter !== 'semua' && String(t.ID_Kategori) !== String(catFilter)) return false;
+        if (prioFilter !== 'semua' && t.Prioritas !== prioFilter) return false;
+        return true;
+      });
+
+      const prioOrder = { Tinggi: 0, Sedang: 1, Rendah: 2 };
+      if (scheduleTaskFilter === 'selesai') {
+        filtered.sort((a, b) => String(b.Waktu_Selesai || '').localeCompare(String(a.Waktu_Selesai || '')));
+      } else {
+        filtered.sort((a, b) => {
+          const oa = isAgendaTaskOverdue(a) ? 0 : 1;
+          const ob = isAgendaTaskOverdue(b) ? 0 : 1;
+          if (oa !== ob) return oa - ob;
+          const dCmp = String(a.Deadline || '9999-12-31').localeCompare(String(b.Deadline || '9999-12-31'));
+          if (dCmp !== 0) return dCmp;
+          return (prioOrder[a.Prioritas] ?? 1) - (prioOrder[b.Prioritas] ?? 1);
+        });
+      }
+
+      const listEl = document.getElementById('sched-tasks-list-container');
+      if (!listEl) return;
+      if (!filtered.length) {
+        listEl.innerHTML = `<div class="banner-glass-card rounded-2xl p-6 text-center space-y-2.5">
+          <p class="text-xs font-bold text-[#526582]">${scheduleTaskFilter === 'selesai' ? 'Belum ada tugas yang diselesaikan.' : 'Belum ada tugas aktif pada filter ini.'}</p>
+          ${scheduleTaskFilter === 'aktif' ? `<button type="button" onclick="openScheduleTaskModal()" class="px-4 py-2 rounded-full bg-[#0b1d3a] text-[#2fe0d0] text-xs font-extrabold shadow">+ Buat Tugas Baru</button>` : ''}
+        </div>`;
+        return;
+      }
+      listEl.innerHTML = filtered.map((t) => renderScheduleTaskCard(t)).join('');
+    }
+
+    function openScheduleEventModal(opts = {}) {
+      populateScheduleCategorySelects();
+      const form = document.getElementById('schedule-event-form');
+      if (form) form.reset();
+      const editEv = opts.editId ? agendaJadwal.find((e) => String(e.ID_Jadwal) === String(opts.editId)) : null;
+      const titleEl = document.getElementById('sched-event-modal-title');
+      const delBtn = document.getElementById('btn-delete-sched-event');
+      populateScheduleTaskLinkSelect(editEv ? editEv.ID_Tugas : (opts.taskId || ''));
+
+      if (editEv) {
+        const sParts = splitDateTimeParts(editEv.Mulai);
+        const eParts = splitDateTimeParts(editEv.Selesai);
+        if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-pen-to-square text-[#5b7cf0]"></i> Edit Jadwal';
+        if (delBtn) delBtn.classList.remove('hidden');
+        document.getElementById('se_id').value = editEv.ID_Jadwal;
+        document.getElementById('se_judul').value = editEv.Judul;
+        document.getElementById('se_date').value = sParts.date || todayISO;
+        document.getElementById('se_start_time').value = sParts.time || '09:00';
+        document.getElementById('se_end_time').value = eParts.time || '10:00';
+        document.getElementById('se_kategori').value = editEv.ID_Kategori;
+        document.getElementById('se_lokasi').value = editEv.Lokasi_atau_Link || '';
+        document.getElementById('se_tugas_id').value = editEv.ID_Tugas || '';
+        document.getElementById('se_catatan').value = editEv.Catatan || '';
+      } else {
+        if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-calendar-plus text-[#5b7cf0]"></i> Tambah Jadwal';
+        if (delBtn) delBtn.classList.add('hidden');
+        document.getElementById('se_id').value = '';
+        document.getElementById('se_judul').value = opts.judul || '';
+        document.getElementById('se_date').value = opts.date || todayISO;
+        const nextHour = Math.min(22, Math.max(8, new Date().getHours() + 1));
+        document.getElementById('se_start_time').value = opts.startTime || `${pad2(nextHour)}:00`;
+        document.getElementById('se_end_time').value = opts.endTime || `${pad2(Math.min(23, nextHour + 1))}:00`;
+        if (opts.categoryId) document.getElementById('se_kategori').value = opts.categoryId;
+        document.getElementById('se_lokasi').value = opts.lokasi || '';
+        document.getElementById('se_tugas_id').value = opts.taskId || '';
+        document.getElementById('se_catatan').value = opts.catatan || '';
+      }
+      toggleModal('modal-schedule-event', true);
+    }
+
+    function openScheduleMoveModal(eventId) {
+      const ev = agendaJadwal.find((e) => String(e.ID_Jadwal) === String(eventId));
+      if (!ev) return;
+      const sParts = splitDateTimeParts(ev.Mulai);
+      const eParts = splitDateTimeParts(ev.Selesai);
+      const dur = Math.max(15, timeStrToMins(eParts.time) - timeStrToMins(sParts.time) || 60);
+      document.getElementById('sm_id').value = ev.ID_Jadwal;
+      document.getElementById('sm_duration_mins').value = String(dur);
+      document.getElementById('sm_title_preview').textContent = ev.Judul;
+      document.getElementById('sm_current_preview').textContent = `Saat ini: ${formatShortIdDate(sParts.date)} • ${sParts.time} – ${eParts.time}`;
+      document.getElementById('sm_date').value = sParts.date || todayISO;
+      document.getElementById('sm_start_time').value = sParts.time || '09:00';
+      document.getElementById('sm_end_time').value = eParts.time || minsToTimeStr(timeStrToMins(sParts.time || '09:00') + dur);
+      toggleModal('modal-schedule-move', true);
+    }
+
+    function shiftMoveDateDays(days) {
+      const dateEl = document.getElementById('sm_date');
+      if (!dateEl) return;
+      const base = parseISODateLocal(dateEl.value || todayISO);
+      base.setDate(base.getDate() + days);
+      dateEl.value = formatLocalDateISO(base);
+    }
+
+    function autoAdjustMoveEndTime() {
+      const startEl = document.getElementById('sm_start_time');
+      const endEl = document.getElementById('sm_end_time');
+      const dur = Number(document.getElementById('sm_duration_mins')?.value) || 60;
+      if (startEl && endEl && startEl.value) {
+        endEl.value = minsToTimeStr(timeStrToMins(startEl.value) + dur);
+      }
+    }
+
+    async function deleteScheduleEventFromModal() {
+      const id = document.getElementById('se_id')?.value;
+      if (!id) return;
+      const okConfirm = await askConfirm('Hapus jadwal ini dari Schedule Maker & SPS 1?');
+      if (!okConfirm) return;
+      agendaJadwal = agendaJadwal.filter((e) => String(e.ID_Jadwal) !== String(id));
+      pendingAgendaJadwalSync = pendingAgendaJadwalSync.filter((p) => String(p.id) !== String(id));
+      if (!deletedAgendaJadwalIds.includes(String(id))) deletedAgendaJadwalIds.push(String(id));
+      savePendingSyncState();
+      saveLocalBackup();
+      toggleModal('modal-schedule-event', false);
+      updateScheduleModule();
+      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaJadwal', id });
+      if (ok) {
+        deletedAgendaJadwalIds = deletedAgendaJadwalIds.filter((x) => String(x) !== String(id));
+        savePendingSyncState();
+        showToast('Jadwal dihapus & disinkronkan ke SPS 1!');
+      } else {
+        showToast('Jadwal dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+      }
+    }
+
+    function openScheduleTaskModal(opts = {}) {
+      populateScheduleCategorySelects();
+      const form = document.getElementById('schedule-task-form');
+      if (form) form.reset();
+      const editTask = opts.editId ? agendaTugas.find((t) => String(t.ID_Tugas) === String(opts.editId)) : null;
+      const titleEl = document.getElementById('sched-task-modal-title');
+      const delBtn = document.getElementById('btn-delete-sched-task');
+
+      if (editTask) {
+        const dParts = splitDateTimeParts(editTask.Deadline);
+        if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-pen-to-square text-teal-600"></i> Edit Tugas';
+        if (delBtn) delBtn.classList.remove('hidden');
+        document.getElementById('st_id').value = editTask.ID_Tugas;
+        document.getElementById('st_judul').value = editTask.Judul;
+        document.getElementById('st_deadline_date').value = dParts.date || todayISO;
+        document.getElementById('st_deadline_time').value = dParts.time || '';
+        document.getElementById('st_prioritas').value = editTask.Prioritas || 'Sedang';
+        document.getElementById('st_status').value = editTask.Status || 'Aktif';
+        document.getElementById('st_kategori').value = editTask.ID_Kategori;
+        document.getElementById('st_catatan').value = editTask.Catatan || '';
+      } else {
+        if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-list-check text-teal-600"></i> Buat Tugas';
+        if (delBtn) delBtn.classList.add('hidden');
+        document.getElementById('st_id').value = '';
+        document.getElementById('st_deadline_date').value = opts.deadlineDate || todayISO;
+        document.getElementById('st_deadline_time').value = '';
+        document.getElementById('st_prioritas').value = 'Sedang';
+        document.getElementById('st_status').value = 'Aktif';
+      }
+      toggleModal('modal-schedule-task', true);
+    }
+
+    async function deleteScheduleTaskFromModal() {
+      const id = document.getElementById('st_id')?.value;
+      if (!id) return;
+      const okConfirm = await askConfirm('Hapus tugas ini dari Schedule Maker & SPS 1?');
+      if (!okConfirm) return;
+      agendaTugas = agendaTugas.filter((t) => String(t.ID_Tugas) !== String(id));
+      pendingAgendaTugasSync = pendingAgendaTugasSync.filter((p) => String(p.id) !== String(id));
+      if (!deletedAgendaTugasIds.includes(String(id))) deletedAgendaTugasIds.push(String(id));
+      savePendingSyncState();
+      saveLocalBackup();
+      toggleModal('modal-schedule-task', false);
+      updateScheduleModule();
+      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaTugas', id });
+      if (ok) {
+        deletedAgendaTugasIds = deletedAgendaTugasIds.filter((x) => String(x) !== String(id));
+        savePendingSyncState();
+        showToast('Tugas dihapus & disinkronkan ke SPS 1!');
+      } else {
+        showToast('Tugas dihapus lokal (menunggu sinkron SPS 1).', 'warn');
+      }
+    }
+
+    async function toggleAgendaTugasStatus(taskId) {
+      const idx = agendaTugas.findIndex((t) => String(t.ID_Tugas) === String(taskId));
+      if (idx === -1) return;
+      const cur = agendaTugas[idx];
+      const nextDone = cur.Status !== 'Selesai';
+      const updated = {
+        ...cur,
+        Status: nextDone ? 'Selesai' : 'Aktif',
+        Waktu_Selesai: nextDone ? formatLocalDateTimeStr(new Date()) : ''
+      };
+      agendaTugas[idx] = updated;
+      enqueuePendingAgenda('tugas', updated);
+      saveLocalBackup();
+      updateScheduleModule();
+      const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: updated });
+      if (ok) {
+        showToast(nextDone ? 'Tugas ditandai selesai & tersinkron!' : 'Tugas diaktifkan kembali!');
+      } else {
+        showToast(nextDone ? 'Tugas ditandai selesai (menunggu sinkron SPS 1).' : 'Status tugas diperbarui lokal.', 'warn');
+      }
+    }
+
+    function scheduleFromTugas(taskId) {
+      const task = agendaTugas.find((t) => String(t.ID_Tugas) === String(taskId));
+      if (!task) return;
+      const dParts = splitDateTimeParts(task.Deadline);
+      const targetDate = (dParts.date && dParts.date >= todayISO) ? dParts.date : todayISO;
+      openScheduleEventModal({
+        judul: `Kerjakan: ${task.Judul}`,
+        date: targetDate,
+        categoryId: task.ID_Kategori,
+        taskId: task.ID_Tugas,
+        catatan: task.Catatan || ''
+      });
+    }
+
+    function openScheduleCategoryModal() {
+      document.getElementById('sc_edit_id').value = '';
+      document.getElementById('sc_nama').value = '';
+      document.getElementById('sc_warna').value = '#5b7cf0';
+      renderScheduleCategoriesList();
+      toggleModal('modal-schedule-categories', true);
+    }
+
+    function editScheduleCategoryInline(catId) {
+      const cat = agendaKategori.find((c) => String(c.ID_Kategori) === String(catId));
+      if (!cat) return;
+      document.getElementById('sc_edit_id').value = cat.ID_Kategori;
+      document.getElementById('sc_nama').value = cat.Nama_Kategori;
+      document.getElementById('sc_warna').value = cat.Warna || '#5b7cf0';
+      document.getElementById('sc_nama').focus();
+    }
+
+    async function deleteScheduleCategory(catId) {
+      if (agendaKategori.length <= 1) return showToast('Minimal harus ada 1 kategori aktif.', 'warn');
+      const okConfirm = await askConfirm('Hapus kategori ini dari Schedule Maker & SPS 1?');
+      if (!okConfirm) return;
+      agendaKategori = agendaKategori.filter((c) => String(c.ID_Kategori) !== String(catId));
+      pendingAgendaKategoriSync = pendingAgendaKategoriSync.filter((p) => String(p.id) !== String(catId));
+      if (!deletedAgendaKategoriIds.includes(String(catId))) deletedAgendaKategoriIds.push(String(catId));
+      if (scheduleCalendarCategoryFilter === catId) scheduleCalendarCategoryFilter = 'semua';
+      savePendingSyncState();
+      saveLocalBackup();
+      renderScheduleCategoriesList();
+      updateScheduleModule();
+      const ok = await postDataRealTime(SPS_1_URL, { action: 'deleteAgendaKategori', id: catId });
+      if (ok) {
+        deletedAgendaKategoriIds = deletedAgendaKategoriIds.filter((x) => String(x) !== String(catId));
+        savePendingSyncState();
+        showToast('Kategori dihapus & disinkronkan!');
+      }
+    }
+
+    function renderScheduleCategoriesList() {
+      const listEl = document.getElementById('schedule-categories-list');
+      if (!listEl) return;
+      listEl.innerHTML = agendaKategori.map((c) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#f2f7fc] border border-slate-200">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-4 h-4 rounded-full shrink-0 border border-white shadow-sm" style="background-color:${escapeHtml(c.Warna)};"></span>
+            <div class="min-w-0">
+              <span class="text-xs font-extrabold text-[#0b1d3a] block truncate">${escapeHtml(c.Nama_Kategori)}</span>
+              <span class="text-[9px] font-mono text-[#526582]">${escapeHtml(c.ID_Kategori)} • ${escapeHtml(c.Warna)}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="editScheduleCategoryInline('${escapeHtml(c.ID_Kategori)}')" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-[#0b1d3a] hover:bg-slate-50 flex items-center justify-center text-[10px]" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button type="button" onclick="deleteScheduleCategory('${escapeHtml(c.ID_Kategori)}')" class="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 flex items-center justify-center text-[10px]" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`).join('');
+    }
+
+    function bindScheduleForms() {
+      document.getElementById('schedule-event-form')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const editId = document.getElementById('se_id').value.trim();
+        const judul = document.getElementById('se_judul').value.trim();
+        const date = document.getElementById('se_date').value || todayISO;
+        const startT = document.getElementById('se_start_time').value || '09:00';
+        const endT = document.getElementById('se_end_time').value || '10:00';
+        if (!judul) return showToast('Judul jadwal wajib diisi!', 'warn');
+        if (timeStrToMins(endT) <= timeStrToMins(startT)) return showToast('Jam selesai harus lebih akhir dari jam mulai.', 'warn');
+
+        const entry = normalizeAgendaJadwal({
+          ID_Jadwal: editId || `JDW-${Date.now()}`,
+          Judul: judul,
+          Mulai: `${date} ${startT}`,
+          Selesai: `${date} ${endT}`,
+          ID_Kategori: document.getElementById('se_kategori').value,
+          Lokasi_atau_Link: document.getElementById('se_lokasi').value.trim(),
+          Catatan: document.getElementById('se_catatan').value.trim(),
+          ID_Tugas: document.getElementById('se_tugas_id').value.trim()
+        });
+
+        const idx = agendaJadwal.findIndex((x) => String(x.ID_Jadwal) === String(entry.ID_Jadwal));
+        if (idx >= 0) agendaJadwal[idx] = entry;
+        else agendaJadwal.push(entry);
+
+        scheduleSelectedDate = date;
+        enqueuePendingAgenda('jadwal', entry);
+        saveLocalBackup();
+        toggleModal('modal-schedule-event', false);
+        updateScheduleModule();
+
+        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: entry });
+        if (ok) showToast(editId ? 'Jadwal diperbarui & tersinkron ke SPS 1!' : 'Jadwal ditambahkan & tersinkron ke SPS 1!');
+        else showToast('Jadwal disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+      });
+
+      document.getElementById('schedule-move-form')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('sm_id').value.trim();
+        const date = document.getElementById('sm_date').value || todayISO;
+        const startT = document.getElementById('sm_start_time').value || '09:00';
+        const endT = document.getElementById('sm_end_time').value || '10:00';
+        if (timeStrToMins(endT) <= timeStrToMins(startT)) return showToast('Jam selesai harus lebih akhir dari jam mulai.', 'warn');
+
+        const idx = agendaJadwal.findIndex((x) => String(x.ID_Jadwal) === String(id));
+        if (idx === -1) return;
+        const updated = {
+          ...agendaJadwal[idx],
+          Mulai: `${date} ${startT}`,
+          Selesai: `${date} ${endT}`
+        };
+        agendaJadwal[idx] = updated;
+        scheduleSelectedDate = date;
+        scheduleCalendarAnchorDate = date;
+        enqueuePendingAgenda('jadwal', updated);
+        saveLocalBackup();
+        toggleModal('modal-schedule-move', false);
+        updateScheduleModule();
+
+        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaJadwal', data: updated });
+        if (ok) showToast('Jadwal dipindahkan & tersinkron ke SPS 1!');
+        else showToast('Jadwal dipindahkan lokal (menunggu sinkron SPS 1).', 'warn');
+      });
+
+      document.getElementById('schedule-task-form')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const editId = document.getElementById('st_id').value.trim();
+        const judul = document.getElementById('st_judul').value.trim();
+        const dDate = document.getElementById('st_deadline_date').value || todayISO;
+        const dTime = document.getElementById('st_deadline_time').value.trim();
+        const status = document.getElementById('st_status').value || 'Aktif';
+        if (!judul) return showToast('Judul tugas wajib diisi!', 'warn');
+
+        const existing = editId ? agendaTugas.find((t) => String(t.ID_Tugas) === String(editId)) : null;
+        let waktuSelesai = existing ? existing.Waktu_Selesai : '';
+        if (status === 'Selesai' && !waktuSelesai) waktuSelesai = formatLocalDateTimeStr(new Date());
+        if (status !== 'Selesai') waktuSelesai = '';
+
+        const entry = normalizeAgendaTugas({
+          ID_Tugas: editId || `TGS-${Date.now()}`,
+          Judul: judul,
+          Deadline: dTime ? `${dDate} ${dTime}` : dDate,
+          Prioritas: document.getElementById('st_prioritas').value || 'Sedang',
+          Status: status,
+          ID_Kategori: document.getElementById('st_kategori').value,
+          Catatan: document.getElementById('st_catatan').value.trim(),
+          Waktu_Selesai: waktuSelesai
+        });
+
+        const idx = agendaTugas.findIndex((x) => String(x.ID_Tugas) === String(entry.ID_Tugas));
+        if (idx >= 0) agendaTugas[idx] = entry;
+        else agendaTugas.push(entry);
+
+        enqueuePendingAgenda('tugas', entry);
+        saveLocalBackup();
+        toggleModal('modal-schedule-task', false);
+        updateScheduleModule();
+
+        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaTugas', data: entry });
+        if (ok) showToast(editId ? 'Tugas diperbarui & tersinkron ke SPS 1!' : 'Tugas dibuat & tersinkron ke SPS 1!');
+        else showToast('Tugas disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+      });
+
+      document.getElementById('schedule-category-form')?.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const editId = document.getElementById('sc_edit_id').value.trim();
+        const nama = document.getElementById('sc_nama').value.trim();
+        const warna = document.getElementById('sc_warna').value || '#5b7cf0';
+        if (!nama) return showToast('Nama kategori wajib diisi!', 'warn');
+
+        const slug = nama.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 12) || String(Date.now()).slice(-4);
+        const entry = normalizeAgendaKategori({
+          ID_Kategori: editId || `KAT-${slug}-${String(Date.now()).slice(-3)}`,
+          Nama_Kategori: nama,
+          Warna: warna
+        });
+
+        const idx = agendaKategori.findIndex((c) => String(c.ID_Kategori) === String(entry.ID_Kategori));
+        if (idx >= 0) agendaKategori[idx] = entry;
+        else agendaKategori.push(entry);
+
+        document.getElementById('sc_edit_id').value = '';
+        document.getElementById('sc_nama').value = '';
+        enqueuePendingAgenda('kategori', entry);
+        saveLocalBackup();
+        renderScheduleCategoriesList();
+        updateScheduleModule();
+
+        const ok = await postDataRealTime(SPS_1_URL, { action: 'saveAgendaKategori', data: entry });
+        if (ok) showToast('Kategori tersimpan & tersinkron ke SPS 1!');
+        else showToast('Kategori disimpan lokal (menunggu sinkron SPS 1).', 'warn');
+      });
     }
 
     // ================= BIND FORM MODUL 2, 3, 4 & INISIALISASI =================
@@ -4965,6 +6762,7 @@ Terima kasih banyak! 🙏`;
       bindCurrencyInputs();
       bindKasFormListeners();
       bindModuleForms();
+      bindScheduleForms();
 
       loadLocalBackup();
       populateWalletSelects();
@@ -4974,6 +6772,7 @@ Terima kasih banyak! 🙏`;
       updateJastipModule();
       renderRekapTable();
       updateRiwayatModule();
+      updateScheduleModule();
 
       localStorage.removeItem('fm_dashboard_unlocked');
       let resumeDashboard = false;
